@@ -11,6 +11,10 @@ import { isGitRepo, getGitDiff, getRecentFiles } from './git.js';
 import { buildHistoryContext, saveReview } from './history.js';
 import { buildGuidePrompt } from './guide.js';
 import { addTodo, updateTodo, loadTodos, formatTodoList, formatTodoSummary } from './todo.js';
+import { buildSpotCheckPrompt } from './prompts/spot-check.js';
+import { buildTestTranslatePrompt } from './prompts/test-translate.js';
+import { buildCleanupPrompt } from './prompts/cleanup.js';
+import { buildValidatePrompt } from './prompts/validate.js';
 import type { Perspective } from './types.js';
 import type { Priority, TodoStatus } from './todo.js';
 
@@ -419,6 +423,160 @@ server.tool(
         text: formatTodoSummary(cwd),
       }],
     };
+  },
+);
+
+// --- spot_check tool ---
+
+server.tool(
+  'spot_check',
+  'Quick security scan of AI-generated code. Flags only dangerous issues (vulnerabilities, logic errors, unsafe operations). Fast — meant to be run immediately after AI generates code.',
+  {
+    code: z
+      .string()
+      .optional()
+      .describe('Code to review. Paste directly or use file_path instead.'),
+    file_path: z
+      .string()
+      .optional()
+      .describe('Path to file to review. Used if code is not provided directly.'),
+    filename: z
+      .string()
+      .optional()
+      .describe('Filename hint for context (e.g. "auth.ts"). Auto-detected from file_path if not provided.'),
+  },
+  async ({ code, file_path, filename }) => {
+    let codeContent = code || '';
+    let resolvedFilename = filename;
+
+    if (!codeContent && file_path) {
+      try {
+        const { readFileSync } = await import('node:fs');
+        const { basename } = await import('node:path');
+        codeContent = readFileSync(file_path, 'utf-8');
+        if (!resolvedFilename) resolvedFilename = basename(file_path);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return {
+          content: [{ type: 'text' as const, text: `Error reading file: ${message}` }],
+          isError: true,
+        };
+      }
+    }
+
+    if (!codeContent.trim()) {
+      return {
+        content: [{ type: 'text' as const, text: 'Provide either code or file_path to scan.' }],
+        isError: true,
+      };
+    }
+
+    return {
+      content: [{ type: 'text' as const, text: buildSpotCheckPrompt(codeContent, resolvedFilename) }],
+    };
+  },
+);
+
+// --- test_translate tool ---
+
+server.tool(
+  'test_translate',
+  'Translate test results into plain language. Tells a non-technical founder what the tests cover, what failed, and exactly what still needs manual verification. Produces a 15-minute manual test script.',
+  {
+    test_output: z
+      .string()
+      .optional()
+      .describe('Paste the test runner output here. If not provided, Callout will ask you to run tests and paste the result.'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Used to collect context. Defaults to current working directory.'),
+  },
+  async ({ test_output, project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    if (!test_output) {
+      return {
+        content: [{
+          type: 'text' as const,
+          text: `Please run your test suite and paste the output here.\n\nCommon commands:\n- \`npm test\`\n- \`npx vitest run\`\n- \`pytest\`\n- \`go test ./...\`\n\nThen call test_translate again with the test_output parameter.`,
+        }],
+      };
+    }
+
+    try {
+      const context = await collectContext(cwd);
+      return {
+        content: [{ type: 'text' as const, text: buildTestTranslatePrompt(test_output, context) }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error: ${message}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+// --- cleanup tool ---
+
+server.tool(
+  'cleanup',
+  'Scan the project for dead code, duplicate logic, unused dependencies, and over-engineering. Returns specific actions: what to delete, what to merge, and what to simplify.',
+  {
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    try {
+      const context = await collectContext(cwd);
+      return {
+        content: [{ type: 'text' as const, text: buildCleanupPrompt(context) }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error: ${message}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+// --- validate tool ---
+
+server.tool(
+  'validate',
+  'Validate a technology decision in the context of your project. Ask "Should I use X or Y?" or "Is Supabase the right choice?". Returns a direct verdict, reasoning, confidence level, and what could change the answer.',
+  {
+    question: z
+      .string()
+      .describe('Your decision question. E.g. "Should I use Supabase or Planetscale?" or "Is it worth adding Redis for caching now?"'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ question, project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    try {
+      const context = await collectContext(cwd);
+      return {
+        content: [{ type: 'text' as const, text: buildValidatePrompt(question, context) }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error: ${message}` }],
+        isError: true,
+      };
+    }
   },
 );
 

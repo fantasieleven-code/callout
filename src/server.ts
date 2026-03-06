@@ -9,7 +9,10 @@ import { buildChallengePrompt } from './challenge.js';
 import { RULES_TEMPLATE } from './rules-template.js';
 import { isGitRepo, getGitDiff, getRecentFiles } from './git.js';
 import { buildHistoryContext, saveReview } from './history.js';
+import { buildGuidePrompt } from './guide.js';
+import { addTodo, updateTodo, loadTodos, formatTodoList, formatTodoSummary } from './todo.js';
 import type { Perspective } from './types.js';
+import type { Priority, TodoStatus } from './todo.js';
 
 const server = new McpServer({
   name: 'archon',
@@ -141,42 +144,38 @@ server.tool(
     return {
       content: [{
         type: 'text' as const,
-        text: `# Archon — Architecture Review & Product Challenge
+        text: `# Archon — Your AI Co-founder for 0→1 Builds
 
-You have 4 tools available:
+## Tools Available
 
-## 1. review — "Am I building this right?"
-Full architecture audit from 5 expert perspectives.
+### guide — "What should I be thinking about right now?"
+Detects your project stage (research → architecture → building → testing → launch) and shows the questions you should be asking but aren't.
 
-**Try saying:**
-- "Review this project"
-- "Run a security + CTO review"
-- "Review this project from the perspective of an HR manager"
+**Try:** "Guide me" / "What should I focus on?"
 
-## 2. challenge — "Should I be building this at all?"
-Questions whether your current work is worth doing. Checks ROI, sunk cost, and scope creep.
+### review — "Get 5 expert opinions on my project"
+CTO, Security, Product, DevOps, and Customer perspectives. Finds what you didn't know to look for — from over-engineering to patent opportunities.
 
-**Try saying:**
-- "Challenge what I'm working on right now"
-- "I've been fixing this bug for an hour, challenge whether it's worth it"
-- "Before I add this new feature, challenge whether we need it"
+**Try:** "Review this project" / "Run a security + CTO review"
 
-## 3. init — "Set it and forget it"
-Writes auto-trigger rules into your CLAUDE.md so Archon activates automatically:
-- When you edit the same file 3+ times
-- When a bug fix takes too long
-- Before creating new files or adding dependencies
+### challenge — "Is what I'm doing right now worth it?"
+When you're stuck on a bug or feature, this asks the hard question: should you keep going, simplify, or delete it?
 
-**Try saying:**
-- "Initialize Archon in this project"
+**Try:** "Challenge what I'm working on" / "This bug is taking forever, should I keep going?"
 
-## 4. archon_help — This message
-**Try saying:**
-- "What can Archon do?"
+### Todo List — Your central command
+All findings from guide, review, and challenge flow into your todo list. Track what's found, what's fixed, what's pending.
+
+**Try:** "Show my todos" / "What's my top priority?" / "Mark todo #3 as done"
+
+### init — One-time setup
+Sets up auto-triggers so Archon speaks up automatically during development.
+
+**Try:** "Initialize Archon in this project"
 
 ---
 
-**Quick start:** Say "Initialize Archon in this project" to set up auto-triggers, then just code normally. Archon will speak up when it matters.`,
+**Start here:** Say "Guide me" to see what stage your project is in and what to focus on.`,
       }],
     };
   },
@@ -278,6 +277,141 @@ server.tool(
         isError: true,
       };
     }
+  },
+);
+
+// --- Guide tool ---
+
+server.tool(
+  'guide',
+  'Detect project stage and show what questions you should be asking right now. Proactively surfaces blind spots based on lessons from real 0→1 builds.',
+  {
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    try {
+      const context = await collectContext(cwd);
+      const prompt = buildGuidePrompt(context);
+
+      return {
+        content: [{ type: 'text' as const, text: prompt }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error: ${message}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+// --- Todo tools ---
+
+server.tool(
+  'todo_add',
+  'Add an item to the project todo list. All findings from review, challenge, and guide should be added here.',
+  {
+    title: z.string().describe('Short title of the todo item'),
+    description: z.string().optional().describe('Detailed description'),
+    priority: z.enum(['must', 'should', 'nice']).describe('Priority: must = blocks launch, should = important improvement, nice = when you have time'),
+    source: z.string().optional().describe('Where this item came from (e.g. "CTO review", "Security review", "guide", "user")'),
+    project_path: z.string().optional(),
+  },
+  async ({ title, description, priority, source, project_path }) => {
+    const cwd = project_path || process.cwd();
+    const item = addTodo(cwd, title, description || '', priority, source || 'user');
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Added todo #${item.id}: [${priority.toUpperCase()}] ${title}`,
+      }],
+    };
+  },
+);
+
+server.tool(
+  'todo_update',
+  'Update a todo item status or details.',
+  {
+    id: z.number().describe('Todo item ID'),
+    status: z.enum(['open', 'in_progress', 'done', 'wont_do']).optional().describe('New status'),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    priority: z.enum(['must', 'should', 'nice']).optional(),
+    project_path: z.string().optional(),
+  },
+  async ({ id, status, title, description, priority, project_path }) => {
+    const cwd = project_path || process.cwd();
+    const updates: Record<string, unknown> = {};
+    if (status) updates.status = status;
+    if (title) updates.title = title;
+    if (description) updates.description = description;
+    if (priority) updates.priority = priority;
+
+    const item = updateTodo(cwd, id, updates as { status?: TodoStatus; title?: string; description?: string; priority?: Priority });
+
+    if (!item) {
+      return {
+        content: [{ type: 'text' as const, text: `Todo #${id} not found.` }],
+        isError: true,
+      };
+    }
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Updated todo #${id}: [${item.priority.toUpperCase()}] ${item.title} → ${item.status}`,
+      }],
+    };
+  },
+);
+
+server.tool(
+  'todo_list',
+  'Show all todo items, optionally filtered by status or priority.',
+  {
+    status: z.enum(['open', 'in_progress', 'done', 'wont_do']).optional().describe('Filter by status'),
+    priority: z.enum(['must', 'should', 'nice']).optional().describe('Filter by priority'),
+    project_path: z.string().optional(),
+  },
+  async ({ status, priority, project_path }) => {
+    const cwd = project_path || process.cwd();
+    const todos = loadTodos(cwd);
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: formatTodoList(todos, {
+          status: status as TodoStatus | undefined,
+          priority: priority as Priority | undefined,
+        }),
+      }],
+    };
+  },
+);
+
+server.tool(
+  'todo_summary',
+  'Quick health check: how many items open, in progress, done. Shows top priority items.',
+  {
+    project_path: z.string().optional(),
+  },
+  async ({ project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: formatTodoSummary(cwd),
+      }],
+    };
   },
 );
 

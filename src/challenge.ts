@@ -74,6 +74,14 @@ export function buildChallengePrompt(
     '- **DELETE**: This feature has negative ROI. Remove it and reclaim the complexity budget.',
     '',
     'Be direct. The developer will not be offended — they asked for this review.',
+    '',
+    '## After Challenge: Update Todo List',
+    '',
+    'Based on your verdict:',
+    '- **SIMPLIFY**: Add a todo item with the simpler approach (priority: "should", source: "challenge")',
+    '- **PAUSE**: Add a todo to validate the need before continuing (priority: "must", source: "challenge")',
+    '- **DELETE**: Add a todo to remove this feature (priority: "must", source: "challenge")',
+    '- **CONTINUE**: No todo needed, proceed with current work',
   );
 
   return sections.join('\n');

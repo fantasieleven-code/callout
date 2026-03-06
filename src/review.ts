@@ -72,5 +72,20 @@ export function buildReviewPrompt(
     'Then proceed with the detailed perspective reviews below.',
   ].join('\n');
 
-  return header + '\n' + sections.join('\n\n---\n');
+  const footer = [
+    '',
+    '---',
+    '',
+    '## After Review: Add to Todo List',
+    '',
+    'After completing the review, add each finding to the project todo list using the `todo_add` tool:',
+    '- MUST FIX items → priority: "must"',
+    '- SHOULD FIX items → priority: "should"',
+    '- Set source to the perspective name (e.g. "CTO review", "Security review")',
+    '- GOOD items do not need to be added (they confirm correct decisions)',
+    '',
+    'This ensures no finding is forgotten and progress can be tracked across reviews.',
+  ].join('\n');
+
+  return header + '\n' + sections.join('\n\n---\n') + footer;
 }

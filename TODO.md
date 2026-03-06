@@ -1,7 +1,7 @@
 # Callout — Complete Todo List
 
-> 更新: 2026-03-06
-> 状态: V0.1完成 (10 tools, 40 tests, 8 commits)
+> 更新: 2026-03-06 晚
+> 状态: V0.1完成 + 品牌确定 + GitHub公开就绪
 
 ---
 
@@ -36,7 +36,7 @@
 
 ### CI/CD
 
-- [ ] **创建 GitHub 仓库** (callout-dev 或 callout-ai)
+- [x] **创建 GitHub 仓库** — fantasieleven-code/callout ✅ (改名完成)
 - [ ] **GitHub Actions CI** (.github/workflows/ci.yml)
   - PR时: npm ci → build → test
   - main push: 同上
@@ -143,9 +143,9 @@
 ## 待确认/待调研
 
 - [ ] Kimi Code 的规则文件格式 — 确认后加入 setup
-- [ ] 产品名称最终确定 — 当前暂用 Callout
-- [ ] npm 包名确认 — callout-dev 是否可用
-- [ ] 域名注册 — callout.dev 或 callout-ai.dev
+- [x] 产品名称最终确定 — **Callout** ✅
+- [x] npm 包名确认 — **callout-dev** 可用 ✅
+- [x] 域名注册 — **callout.dev** 已注册 (Cloudflare) ✅
 - [ ] Callout 自己要不要有 CLAUDE.md 自动触发规则（吃自己的狗粮）
 
 ---

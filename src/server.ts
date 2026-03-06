@@ -15,7 +15,7 @@ import type { Perspective } from './types.js';
 import type { Priority, TodoStatus } from './todo.js';
 
 const server = new McpServer({
-  name: 'archon',
+  name: 'callout',
   version: '0.1.0',
 });
 

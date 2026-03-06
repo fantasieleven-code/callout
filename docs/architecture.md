@@ -1,4 +1,4 @@
-# Archon Technical Architecture
+# Callout Technical Architecture
 
 > 最后更新: 2026-03-06
 
@@ -13,7 +13,7 @@
     │
     ▼
 ┌─────────────────────────────────────┐
-│           Archon MCP Server          │
+│           Callout MCP Server          │
 │                                     │
 │  ┌──────────┐  ┌───────────────┐   │
 │  │ Context   │  │ Stage         │   │
@@ -38,15 +38,15 @@
                │
                ▼
     ┌──────────────────┐
-    │  项目/.archon/    │
+    │  项目/.callout/    │
     │  ├── todo.json    │  ← 所有发现的执行追踪
     │  └── history.json │  ← 审查历史(跨review对比)
     └──────────────────┘
 ```
 
-## Core Principle: Archon不调LLM
+## Core Principle: Callout不调LLM
 
-Archon 只做两件事：
+Callout 只做两件事：
 1. **收集上下文** — 扫描项目结构、依赖、代码统计、git历史
 2. **组装prompt** — 把上下文 + 视角模板 + 历史记录组装成结构化prompt
 
@@ -54,7 +54,7 @@ Archon 只做两件事：
 - 零API成本
 - 不需要配置API key
 - 用户用什么模型就用什么模型
-- Archon永远不会因为API配额限制而不可用
+- Callout永远不会因为API配额限制而不可用
 
 ---
 
@@ -68,7 +68,7 @@ Archon 只做两件事：
 collectContext(cwd)          ← 扫描文件树、读package.json/README/CLAUDE.md
     │
     ▼
-buildHistoryContext(cwd)     ← 加载.archon/history.json，生成对比指令
+buildHistoryContext(cwd)     ← 加载.callout/history.json，生成对比指令
     │
     ▼
 buildReviewPrompt(context, perspectives)   ← 5个视角prompt + Executive Summary
@@ -143,7 +143,7 @@ if (process.argv.includes('--http')) {
   await server.connect(transport);
 }
 ```
-- 支持远程审查（team成员共享一个Archon实例）
+- 支持远程审查（team成员共享一个Callout实例）
 - 支持Web UI连接
 - 是SaaS化的基础
 
@@ -153,7 +153,7 @@ if (process.argv.includes('--http')) {
 
 ```
 项目根目录/
-└── .archon/
+└── .callout/
     ├── todo.json        # TodoList { nextId, items[] }
     └── history.json     # ReviewHistory { reviews[] }
 ```
@@ -182,7 +182,7 @@ interface ReviewRecord {
 ```
 
 ### .gitignore 建议
-用户可以选择是否跟踪 `.archon/`：
+用户可以选择是否跟踪 `.callout/`：
 - **跟踪**：团队共享todo和审查历史
 - **不跟踪**：每个人有自己的todo
 
@@ -192,7 +192,7 @@ interface ReviewRecord {
 
 ### 项目记忆文件 (自动触发规则)
 
-不同工具读取不同的"规则文件"。`npx archon-dev setup` 自动检测并写入所有相关文件：
+不同工具读取不同的"规则文件"。`npx callout-dev setup` 自动检测并写入所有相关文件：
 
 | 工具 | 规则文件 | 何时写入 |
 |------|---------|---------|
@@ -202,7 +202,7 @@ interface ReviewRecord {
 | GitHub Copilot | `.github/copilot-instructions.md` | 检测到已有此文件时 |
 | Kimi Code | 待确认 | 待支持 |
 
-所有文件写入相同的 Archon Auto-Trigger Rules 内容。
+所有文件写入相同的 Callout Auto-Trigger Rules 内容。
 
 ### MCP配置文件
 
@@ -211,8 +211,8 @@ interface ReviewRecord {
 ```json
 {
   "mcpServers": {
-    "archon": {
-      "command": "archon",
+    "callout": {
+      "command": "callout",
       "args": []
     }
   }
@@ -226,7 +226,7 @@ interface ReviewRecord {
 | VS Code | `.vscode/mcp.json` |
 | Windsurf | `~/.codeium/windsurf/mcp_config.json` |
 
-`npx archon-dev setup` 自动检测已安装的编辑器并写入配置。
+`npx callout-dev setup` 自动检测已安装的编辑器并写入配置。
 
 ---
 
@@ -287,7 +287,7 @@ git push --follow-tags
 ### 当前 (V0.1)
 - **单元测试**: Vitest, 40 tests, 5 files
 - **测试覆盖**: prompt构建、阶段检测、todo增删改查、历史持久化
-- **测试隔离**: 用 /tmp/archon-*-test 临时目录，beforeEach/afterEach清理
+- **测试隔离**: 用 /tmp/callout-*-test 临时目录，beforeEach/afterEach清理
 
 ### V0.2 目标
 - 新工具的单元测试 (spot-check, test-translate, cleanup, validate)
@@ -309,17 +309,17 @@ git push --follow-tags
 
 ## Security Considerations
 
-- Archon读取项目文件但**不上传任何数据**（纯本地）
+- Callout读取项目文件但**不上传任何数据**（纯本地）
 - git.ts 的 execSync 设置 10秒 timeout 防止hang
 - git diff 输出截断到 8000字节 防止内存问题
 - setup.ts 不覆盖已有配置（检查后才写入）
-- AGPL许可证防止他人将Archon SaaS化而不开源
+- AGPL许可证防止他人将Callout SaaS化而不开源
 
 ---
 
 ## Context Window Management
 
-Archon的设计考虑了宿主的上下文窗口限制：
+Callout的设计考虑了宿主的上下文窗口限制：
 
 | 策略 | 实现方式 |
 |------|---------|

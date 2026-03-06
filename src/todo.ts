@@ -21,7 +21,7 @@ export interface TodoList {
 }
 
 function todoPath(cwd: string): string {
-  return join(cwd, '.archon', 'todo.json');
+  return join(cwd, '.callout', 'todo.json');
 }
 
 export function loadTodos(cwd: string): TodoList {
@@ -37,7 +37,7 @@ export function loadTodos(cwd: string): TodoList {
 }
 
 function saveTodos(cwd: string, todos: TodoList): void {
-  const dir = join(cwd, '.archon');
+  const dir = join(cwd, '.callout');
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
   }

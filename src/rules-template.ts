@@ -1,11 +1,11 @@
 /**
  * CLAUDE.md auto-trigger rules template.
- * Users copy this into their project's CLAUDE.md to enable automatic Archon triggers.
+ * Users copy this into their project's CLAUDE.md to enable automatic Callout triggers.
  */
 export const RULES_TEMPLATE = `
-## Archon Auto-Trigger Rules
+## Callout Auto-Trigger Rules
 
-When Archon MCP server is available, follow these rules automatically:
+When Callout MCP server is available, follow these rules automatically:
 
 ### Auto-Challenge (use the \`challenge\` tool)
 - **Before creating a new file**: Challenge whether this new module/component is necessary
@@ -22,5 +22,5 @@ When Archon MCP server is available, follow these rules automatically:
 - When challenge returns DELETE or PAUSE: Stop current work, present the finding to the user, and wait for their decision before continuing
 - When challenge returns SIMPLIFY: Present the simpler approach and ask the user which path to take
 - When challenge returns CONTINUE: Proceed without interruption
-- Do NOT suppress or summarize Archon's findings — show them in full
+- Do NOT suppress or summarize Callout's findings — show them in full
 `.trim();

@@ -1,12 +1,12 @@
 {
-  "name": "archon-dev",
+  "name": "callout-dev",
   "version": "0.1.0",
   "description": "Multi-perspective architecture review via MCP. One command, five expert viewpoints.",
   "type": "module",
   "main": "dist/server.js",
   "bin": {
-    "archon": "dist/server.js",
-    "archon-dev": "dist/setup.js"
+    "callout": "dist/server.js",
+    "callout-dev": "dist/setup.js"
   },
   "scripts": {
     "build": "tsc",
@@ -20,17 +20,18 @@
     "architecture",
     "review",
     "ai",
-    "code-review"
+    "code-review",
+    "callout"
   ],
   "author": "fantasieleven-code",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fantasieleven-code/Archon.git"
+    "url": "https://github.com/fantasieleven-code/callout.git"
   },
   "bugs": {
-    "url": "https://github.com/fantasieleven-code/Archon/issues"
+    "url": "https://github.com/fantasieleven-code/callout/issues"
   },
-  "homepage": "https://github.com/fantasieleven-code/Archon#readme",
+  "homepage": "https://callout.dev",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",

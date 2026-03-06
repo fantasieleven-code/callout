@@ -1,4 +1,4 @@
-# Archon — Complete Todo List
+# Callout — Complete Todo List
 
 > 更新: 2026-03-06
 > 状态: V0.1完成 (10 tools, 40 tests, 8 commits)
@@ -36,7 +36,7 @@
 
 ### CI/CD
 
-- [ ] **创建 GitHub 仓库** (archon-dev 或 archon-ai)
+- [ ] **创建 GitHub 仓库** (callout-dev 或 callout-ai)
 - [ ] **GitHub Actions CI** (.github/workflows/ci.yml)
   - PR时: npm ci → build → test
   - main push: 同上
@@ -44,7 +44,7 @@
   - tag v* 触发: build → test → npm publish
   - 需要配置 NPM_TOKEN secret
 - [ ] **npm 账户准备**
-  - 确认 archon-dev 包名可用
+  - 确认 callout-dev 包名可用
   - 设置 npm access token
 
 ### 发布准备
@@ -53,7 +53,7 @@
   - repository / bugs / homepage 字段
   - files 字段 (只发布 dist/ + README + LICENSE)
   - keywords 补充
-- [ ] **.npmignore** (排除 test/ src/ docs/ .archon/)
+- [ ] **.npmignore** (排除 test/ src/ docs/ .callout/)
 - [ ] **server.ts 加 shebang** #!/usr/bin/env node (已有，确认 dist 版本保留)
 - [ ] **npm link 本地测试** — 在 CodeLens 项目上实际跑一遍完整流程
 - [ ] **首次 npm publish** — `npm version 0.2.0 && git push --follow-tags`
@@ -67,7 +67,7 @@
 
 - [ ] **Twitter 线程**: "6天用AI建了一个完整产品，691个测试。然后发现60%是过度设计。"
   - 配图: 代码量/测试数/审查前后对比
-  - 结尾: 引出 Archon
+  - 结尾: 引出 Callout
 - [ ] **博客文章**: "AI写的代码1.7x更多问题——你需要第二双眼睛"
   - 用 CodeLens 作为真实案例
   - 数据: 9天→3.5天, 15个AR项, 专利方向
@@ -78,8 +78,8 @@
 
 ### 案例
 
-- [ ] **用 Archon 审查 CodeLens** — 录屏或截图，作为第一个公开案例
-- [ ] **用 Archon 审查 Archon 自己** — 吃自己的狗粮
+- [ ] **用 Callout 审查 CodeLens** — 录屏或截图，作为第一个公开案例
+- [ ] **用 Callout 审查 Callout 自己** — 吃自己的狗粮
 - [ ] **邀请3-5个独立开发者试用** — 收集反馈
 
 ### 社区
@@ -99,7 +99,7 @@
 - [ ] **CLAUDE.md 自动维护** — review/guide/challenge 后自动更新决策记录
   - 这是跨窗口记忆的关键
   - 同步到 .cursorrules / .windsurfrules
-- [ ] **跨项目经验** (~/.archon/experience.json)
+- [ ] **跨项目经验** (~/.callout/experience.json)
   - "你上个项目也用了4级角色，最后砍成2级"
   - 跨项目的踩坑知识积累
 
@@ -143,10 +143,10 @@
 ## 待确认/待调研
 
 - [ ] Kimi Code 的规则文件格式 — 确认后加入 setup
-- [ ] 产品名称最终确定 — 当前暂用 Archon
-- [ ] npm 包名确认 — archon-dev 是否可用
-- [ ] 域名注册 — archon.dev 或 archon-ai.dev
-- [ ] Archon 自己要不要有 CLAUDE.md 自动触发规则（吃自己的狗粮）
+- [ ] 产品名称最终确定 — 当前暂用 Callout
+- [ ] npm 包名确认 — callout-dev 是否可用
+- [ ] 域名注册 — callout.dev 或 callout-ai.dev
+- [ ] Callout 自己要不要有 CLAUDE.md 自动触发规则（吃自己的狗粮）
 
 ---
 
@@ -161,12 +161,12 @@
 - [x] guide 工具 — 阶段检测 + 检查清单 (5阶段×7问题)
 - [x] todo 工具组 — add/update/list/summary
 - [x] init 工具 — 初始化 + 自动CTO快速审查
-- [x] archon_help 工具 — 使用引导
+- [x] callout_help 工具 — 使用引导
 - [x] save_review_findings 工具 — 审查历史持久化
-- [x] npx archon-dev setup — 一键配置CLI
+- [x] npx callout-dev setup — 一键配置CLI
 - [x] 跨工具规则文件支持 (CLAUDE.md/.cursorrules/.windsurfrules/copilot)
 - [x] challenge 自动收集 git diff
-- [x] 审查历史追踪 (.archon/history.json)
+- [x] 审查历史追踪 (.callout/history.json)
 - [x] CLAUDE.md 自动触发规则模板
 - [x] README 场景化重写
 - [x] CLAUDE.md (项目技术文档)

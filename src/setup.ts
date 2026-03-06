@@ -8,8 +8,8 @@ interface McpConfig {
   mcpServers?: Record<string, { command: string; args?: string[] }>;
 }
 
-const ARCHON_MCP_ENTRY = {
-  command: 'archon',
+const CALLOUT_MCP_ENTRY = {
+  command: 'callout',
   args: [] as string[],
 };
 
@@ -43,13 +43,13 @@ function writeMcpConfig(filePath: string, toolName: string): boolean {
     }
   }
 
-  if (config.mcpServers?.archon) {
+  if (config.mcpServers?.callout) {
     log(`⏭  ${toolName}: already configured`);
     return false;
   }
 
   config.mcpServers = config.mcpServers || {};
-  config.mcpServers.archon = ARCHON_MCP_ENTRY;
+  config.mcpServers.callout = CALLOUT_MCP_ENTRY;
 
   const dir = filePath.substring(0, filePath.lastIndexOf('/'));
   if (dir && !existsSync(dir)) {
@@ -74,7 +74,7 @@ function appendRulesToFile(filePath: string, fileName: string): boolean {
 
   if (existsSync(filePath)) {
     content = readFileSync(filePath, 'utf-8');
-    if (content.includes('Archon Auto-Trigger Rules')) {
+    if (content.includes('Callout Auto-Trigger Rules')) {
       log(`⏭  ${fileName}: auto-trigger rules already present`);
       return false;
     }
@@ -110,7 +110,7 @@ export function setup(cwd?: string): void {
   const projectDir = resolve(cwd || process.cwd());
 
   console.log('');
-  console.log('🏛  Archon Setup');
+  console.log('📣  Callout Setup');
   console.log(`  Project: ${projectDir}`);
   console.log('');
 

@@ -33,14 +33,14 @@ describe('history', () => {
     expect(history.reviews[0].findingSummary).toBe('3 MUST FIX, 2 SHOULD FIX');
   });
 
-  it('creates .archon directory', () => {
+  it('creates .callout directory', () => {
     saveReview(TEST_DIR, {
       date: '2026-03-06',
       perspectives: ['cto'],
       findingSummary: 'test',
     });
 
-    expect(existsSync(join(TEST_DIR, '.archon', 'history.json'))).toBe(true);
+    expect(existsSync(join(TEST_DIR, '.callout', 'history.json'))).toBe(true);
   });
 
   it('builds history context for comparison', () => {

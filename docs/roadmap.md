@@ -1,4 +1,4 @@
-# Archon Product Roadmap
+# Callout Product Roadmap
 
 > 最后更新: 2026-03-06
 
@@ -6,7 +6,7 @@
 
 **让每一个用AI创业的人，从Day 1就有一个懂产品、懂技术、懂商业的AI副驾驶。**
 
-核心洞察：非技术创始人用AI写代码越来越快，但最大的问题不是"怎么做"，而是"不知道该问什么"。Archon 在每个阶段主动推送该问的问题，暴露盲区，追踪执行。
+核心洞察：非技术创始人用AI写代码越来越快，但最大的问题不是"怎么做"，而是"不知道该问什么"。Callout 在每个阶段主动推送该问的问题，暴露盲区，追踪执行。
 
 ---
 
@@ -25,12 +25,12 @@
 | todo_summary | ✅ | 项目健康概览 |
 | init | ✅ | 一键初始化 + 自动跑CTO快速审查 |
 | save_review_findings | ✅ | 审查历史持久化 |
-| archon_help | ✅ | 使用引导 |
+| callout_help | ✅ | 使用引导 |
 
 **基础设施：**
-- ✅ npx archon-dev setup 一键配置
+- ✅ npx callout-dev setup 一键配置
 - ✅ challenge自动收集git diff
-- ✅ 审查历史追踪 (.archon/history.json)
+- ✅ 审查历史追踪 (.callout/history.json)
 - ✅ CLAUDE.md自动触发规则
 - ✅ 40个测试全部通过
 
@@ -50,13 +50,13 @@
 | **validate** | P1 | "我该用X还是Y？" → 给判断+理由+信心度。帮创始人做技术决策 |
 
 ### 发布
-- npm publish (archon-dev)
+- npm publish (callout-dev)
 - GitHub公开仓库
 - GitHub Actions CI/CD (PR自动test+build, tag自动npm publish)
 
 ### 内容引爆
 - Twitter线程：CodeLens案例 ("6天691测试，60%是过度设计")
-- 博客：「AI写的代码有1.7x更多问题」引出Archon
+- 博客：「AI写的代码有1.7x更多问题」引出Callout
 - 用CodeLens作为第一个公开审查案例
 
 ---
@@ -73,12 +73,12 @@
 
 ### 记忆系统 (让新窗口也懂项目)
 - **CLAUDE.md自动维护**: review/guide/challenge执行后，自动更新CLAUDE.md的决策记录段落。新开窗口的AI会自动读取，瞬间理解项目现状
-- **跨项目经验积累**: "你上个项目也用了4级角色，最后砍成2级" — 存储在 ~/.archon/experience.json
-- **决策历史**: "3月6日CTO审查建议砍掉自注册，已执行" — 已有(.archon/history.json)，V1加可视化
+- **跨项目经验积累**: "你上个项目也用了4级角色，最后砍成2级" — 存储在 ~/.callout/experience.json
+- **决策历史**: "3月6日CTO审查建议砍掉自注册，已执行" — 已有(.callout/history.json)，V1加可视化
 - **踩坑知识库**: 从所有用户的匿名审查中学习常见问题
 
 > 核心洞察：CLAUDE.md是项目的"长期记忆"，上下文窗口是"工作记忆"。
-> Archon负责从审查结果中提取关键决策，写入CLAUDE.md，确保每个新窗口都从正确的认知起点开始。
+> Callout负责从审查结果中提取关键决策，写入CLAUDE.md，确保每个新窗口都从正确的认知起点开始。
 
 ### 自定义视角
 - 用户可定义自定义角色 ("HR SaaS买家"、"金融合规官")
@@ -173,14 +173,14 @@
 
 **没有任何现有工具做「多视角审查 + 阶段引导 + todo管理」的组合。**
 
-| 工具 | Stars | 与Archon的关系 |
+| 工具 | Stars | 与Callout的关系 |
 |------|-------|---------------|
 | GitHub Spec-Kit | 74.4K | 互补。它做规划流程，我们做审查+引导 |
 | MetaGPT | 64.8K | 不竞争。多角色生成代码，不审查代码 |
 | Aider /architect | 41.5K | 不竞争。对话式编程，非结构化审查 |
 | APM | 1.7K | 互补。它管执行(项目管理)，我们管方向 |
 
-**关键差异：所有工具帮"怎么做"，Archon帮"该不该做"和"做得对不对"。**
+**关键差异：所有工具帮"怎么做"，Callout帮"该不该做"和"做得对不对"。**
 
 ---
 

@@ -12,7 +12,7 @@ export interface ReviewHistory {
 }
 
 function historyDir(cwd: string): string {
-  return join(cwd, '.archon');
+  return join(cwd, '.callout');
 }
 
 function historyPath(cwd: string): string {

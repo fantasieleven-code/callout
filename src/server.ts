@@ -23,6 +23,10 @@ const server = new McpServer({
   version: '0.1.0',
 });
 
+function withPathHeader(prompt: string, cwd: string): string {
+  return `> Scanning: \`${cwd}\`\n\n${prompt}`;
+}
+
 server.tool(
   'review',
   'Multi-perspective architecture review. Analyzes project structure, dependencies, and code to produce actionable findings from expert viewpoints (CTO, Security, Product, DevOps, Customer).',
@@ -62,9 +66,10 @@ server.tool(
         findingSummary: '(findings will be filled by the AI after review execution)',
       });
 
-      const fullPrompt = historyContext
-        ? prompt + '\n\n---\n\n' + historyContext
-        : prompt;
+      const fullPrompt = withPathHeader(
+        historyContext ? prompt + '\n\n---\n\n' + historyContext : prompt,
+        cwd,
+      );
 
       return {
         content: [
@@ -128,7 +133,7 @@ server.tool(
       );
 
       return {
-        content: [{ type: 'text' as const, text: prompt }],
+        content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -310,7 +315,7 @@ server.tool(
       const prompt = buildGuidePrompt(context);
 
       return {
-        content: [{ type: 'text' as const, text: prompt }],
+        content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -507,7 +512,7 @@ server.tool(
     try {
       const context = await collectContext(cwd);
       return {
-        content: [{ type: 'text' as const, text: buildTestTranslatePrompt(test_output, context) }],
+        content: [{ type: 'text' as const, text: withPathHeader(buildTestTranslatePrompt(test_output, context), cwd) }],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -536,7 +541,7 @@ server.tool(
     try {
       const context = await collectContext(cwd);
       return {
-        content: [{ type: 'text' as const, text: buildCleanupPrompt(context) }],
+        content: [{ type: 'text' as const, text: withPathHeader(buildCleanupPrompt(context), cwd) }],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -568,7 +573,7 @@ server.tool(
     try {
       const context = await collectContext(cwd);
       return {
-        content: [{ type: 'text' as const, text: buildValidatePrompt(question, context) }],
+        content: [{ type: 'text' as const, text: withPathHeader(buildValidatePrompt(question, context), cwd) }],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

@@ -7,6 +7,12 @@ export const RULES_TEMPLATE = `
 
 When Callout MCP server is available, follow these rules automatically:
 
+### project_path — ALWAYS required
+Every Callout tool call MUST include \`project_path\` set to the absolute path of the project currently being worked on.
+Derive it from the files you are reading or editing — do NOT rely on the default (process.cwd() of the MCP server is fixed at launch and will point to the wrong directory if the user did not start the CLI from the project root).
+
+Example: if you are editing \`/Users/alice/projects/my-app/src/auth.ts\`, pass \`project_path: "/Users/alice/projects/my-app"\`.
+
 ### Auto-Challenge (use the \`challenge\` tool)
 - **Before creating a new file**: Challenge whether this new module/component is necessary
 - **When modifying the same file for the 3rd+ time in a session**: Challenge whether you are chasing a bug in a low-value feature

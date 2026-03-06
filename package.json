@@ -22,7 +22,15 @@
     "ai",
     "code-review"
   ],
-  "author": "",
+  "author": "fantasieleven-code",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fantasieleven-code/Archon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fantasieleven-code/Archon/issues"
+  },
+  "homepage": "https://github.com/fantasieleven-code/Archon#readme",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",

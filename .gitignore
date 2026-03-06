@@ -2,3 +2,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 .env
+
+# Internal strategy docs (commercial confidential)
+docs/deep-analysis.md
+docs/product-plan.md

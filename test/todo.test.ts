@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, rmSync, existsSync } from 'node:fs';
 import { addTodo, updateTodo, loadTodos, formatTodoList, formatTodoSummary } from '../src/todo.js';
 
-const TEST_DIR = '/tmp/archon-todo-test';
+const TEST_DIR = '/tmp/callout-todo-test';
 
 beforeEach(() => {
   if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true });

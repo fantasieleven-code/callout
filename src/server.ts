@@ -88,7 +88,7 @@ server.tool(
     git_diff: z
       .string()
       .optional()
-      .describe('Output of `git diff` or `git diff --staged`. If not provided, Archon will describe how to obtain it.'),
+      .describe('Output of `git diff` or `git diff --staged`. If not provided, Callout will describe how to obtain it.'),
     recent_files: z
       .string()
       .optional()
@@ -137,14 +137,14 @@ server.tool(
 );
 
 server.tool(
-  'archon_help',
-  'Show what Archon can do and how to use it. Call this when a user first connects or asks about Archon.',
+  'callout_help',
+  'Show what Callout can do and how to use it. Call this when a user first connects or asks about Callout.',
   {},
   async () => {
     return {
       content: [{
         type: 'text' as const,
-        text: `# Archon — Your AI Co-founder for 0→1 Builds
+        text: `# Callout — Your AI Co-founder for 0→1 Builds
 
 ## Tools Available
 
@@ -169,9 +169,9 @@ All findings from guide, review, and challenge flow into your todo list. Track w
 **Try:** "Show my todos" / "What's my top priority?" / "Mark todo #3 as done"
 
 ### init — One-time setup
-Sets up auto-triggers so Archon speaks up automatically during development.
+Sets up auto-triggers so Callout speaks up automatically during development.
 
-**Try:** "Initialize Archon in this project"
+**Try:** "Initialize Callout in this project"
 
 ---
 
@@ -183,7 +183,7 @@ Sets up auto-triggers so Archon speaks up automatically during development.
 
 server.tool(
   'init',
-  'Initialize Archon in a project. Returns CLAUDE.md rules that enable automatic challenge/review triggers. The host should append these rules to the project\'s CLAUDE.md file.',
+  'Initialize Callout in a project. Returns CLAUDE.md rules that enable automatic challenge/review triggers. The host should append these rules to the project\'s CLAUDE.md file.',
   {
     project_path: z
       .string()
@@ -223,9 +223,9 @@ server.tool(
         '',
         '---',
         '',
-        '## Quick CTO Review (first taste of Archon)',
+        '## Quick CTO Review (first taste of Callout)',
         '',
-        'Now that Archon is initialized, here is a quick CTO-perspective review of the project.',
+        'Now that Callout is initialized, here is a quick CTO-perspective review of the project.',
         'Please execute this review and show the results to the user:',
         '',
         quickReview,
@@ -266,7 +266,7 @@ server.tool(
 
         const { writeFileSync, mkdirSync, existsSync } = await import('node:fs');
         const { join } = await import('node:path');
-        const dir = join(cwd, '.archon');
+        const dir = join(cwd, '.callout');
         if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
         writeFileSync(join(dir, 'history.json'), JSON.stringify(history, null, 2) + '\n');
       }
@@ -428,6 +428,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error('Archon server failed to start:', error);
+  console.error('Callout server failed to start:', error);
   process.exit(1);
 });

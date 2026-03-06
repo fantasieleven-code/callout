@@ -3,7 +3,7 @@ import { mkdirSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadHistory, saveReview, buildHistoryContext } from '../src/history.js';
 
-const TEST_DIR = '/tmp/archon-history-test';
+const TEST_DIR = '/tmp/callout-history-test';
 
 beforeEach(() => {
   if (existsSync(TEST_DIR)) rmSync(TEST_DIR, { recursive: true });

@@ -4,6 +4,11 @@
   "description": "Multi-perspective architecture review via MCP. One command, five expert viewpoints.",
   "type": "module",
   "main": "dist/server.js",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "callout": "dist/server.js",
     "callout-dev": "dist/setup.js"

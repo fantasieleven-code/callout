@@ -4,6 +4,30 @@
 
 MCP Server，非技术创始人的AI副驾驶。通过多视角审查、阶段引导、产品质疑帮用户发现"不知道该问的问题"。所有发现汇入 todo list 统一管理。
 
+## Product Context (为什么做这个)
+
+**起源**: 创始人用AI(Claude Code/Cursor)6天建了CodeLens产品(691测试/186文件)。Day 5做多视角审查发现60%过度设计，9天工作量可缩减到3.5天。核心洞察: **用户不知道该问什么问题**——不是代码写错了，是方向和优先级错了。
+
+**目标用户**: 用AI代替工程团队的非技术创始人。不是程序员。这个人用Cursor/Claude Code/Kimi Code让AI写代码，但没有CTO/产品经理帮他把关方向。
+
+**核心理念**:
+1. 五视角不是"审查"，是帮用户发现盲区（包括专利/合规/部署这些他从没想过的问题）
+2. 发现必须变成行动 → 所有工具输出汇入todo list
+3. 不需要主动调用 → CLAUDE.md/.cursorrules规则自动触发
+4. Archon不调LLM → 只组装prompt，让宿主执行，零API成本
+
+**商业模式**: 开源(AGPL)做分发 → Pro Cloud($29/月) → Team($199/月) → Enterprise(联系销售)
+
+**竞品**: 没有任何工具做"多视角审查+阶段引导+todo管理"的组合。GitHub Spec-Kit(74.4K stars)做规划流程，MetaGPT做代码生成——都不做"该不该做"的判断。
+
+## Current Status & Next Steps
+
+**V0.1已完成**: 10个MCP tools, 40 tests, 9 commits
+**当前任务**: V0.2 — 4个新工具 + GitHub Actions CI/CD + npm publish
+**完整计划**: 见 `TODO.md`
+**产品路线图**: 见 `docs/roadmap.md`
+**技术架构**: 见 `docs/architecture.md`
+
 ## Quick Start
 
 ```bash

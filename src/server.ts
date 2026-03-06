@@ -7,6 +7,8 @@ import { collectContext } from './context.js';
 import { buildReviewPrompt } from './review.js';
 import { buildChallengePrompt } from './challenge.js';
 import { RULES_TEMPLATE } from './rules-template.js';
+import { isGitRepo, getGitDiff, getRecentFiles } from './git.js';
+import { buildHistoryContext, saveReview } from './history.js';
 import type { Perspective } from './types.js';
 
 const server = new McpServer({
@@ -36,14 +38,35 @@ server.tool(
 
     try {
       const context = await collectContext(cwd);
+      const selectedPerspectives = (perspectives as Perspective[] | undefined) || ['cto', 'security', 'product', 'devops', 'customer'];
       const prompt = buildReviewPrompt(
         context,
-        perspectives as Perspective[] | undefined,
+        selectedPerspectives,
         customer_role,
       );
 
+      // Load previous review history for comparison
+      const historyContext = buildHistoryContext(cwd);
+
+      // Save this review to history
+      saveReview(cwd, {
+        date: new Date().toISOString().split('T')[0],
+        perspectives: selectedPerspectives,
+        findingSummary: '(findings will be filled by the AI after review execution)',
+      });
+
+      const fullPrompt = historyContext
+        ? prompt + '\n\n---\n\n' + historyContext
+        : prompt;
+
       return {
-        content: [{ type: 'text' as const, text: prompt }],
+        content: [
+          { type: 'text' as const, text: fullPrompt },
+          {
+            type: 'text' as const,
+            text: `\n\n---\n\nAfter completing this review, please update the review history by calling the \`save_review_findings\` tool with a brief summary of your findings (e.g. "3 MUST FIX, 5 SHOULD FIX, 8 GOOD. Key issue: JWT missing orgId").`,
+          },
+        ],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -81,10 +104,19 @@ server.tool(
 
     try {
       const context = await collectContext(cwd);
+
+      // Auto-collect git info if not provided and project is a git repo
+      let diff = git_diff || '';
+      let files = recent_files || '';
+      if (isGitRepo(cwd)) {
+        if (!diff) diff = getGitDiff(cwd);
+        if (!files) files = getRecentFiles(cwd);
+      }
+
       const prompt = buildChallengePrompt(
         context,
-        git_diff || '',
-        recent_files || '',
+        diff,
+        files,
         description,
       );
 
@@ -162,19 +194,90 @@ server.tool(
   async ({ project_path }) => {
     const cwd = project_path || process.cwd();
 
+    // Also run a quick CTO review so the user sees value immediately
+    let quickReview = '';
+    try {
+      const context = await collectContext(cwd);
+      quickReview = buildReviewPrompt(context, ['cto']);
+    } catch {
+      // If context collection fails, just skip the quick review
+    }
+
+    const parts = [
+      `Please append the following rules to the CLAUDE.md file in \`${cwd}\`.`,
+      'If CLAUDE.md does not exist, create it.',
+      '',
+      '---',
+      '',
+      RULES_TEMPLATE,
+    ];
+
+    if (quickReview) {
+      parts.push(
+        '',
+        '---',
+        '',
+        '## Quick CTO Review (first taste of Archon)',
+        '',
+        'Now that Archon is initialized, here is a quick CTO-perspective review of the project.',
+        'Please execute this review and show the results to the user:',
+        '',
+        quickReview,
+      );
+    }
+
     return {
       content: [{
         type: 'text' as const,
-        text: [
-          `Please append the following rules to the CLAUDE.md file in \`${cwd}\`.`,
-          'If CLAUDE.md does not exist, create it.',
-          '',
-          '---',
-          '',
-          RULES_TEMPLATE,
-        ].join('\n'),
+        text: parts.join('\n'),
       }],
     };
+  },
+);
+
+server.tool(
+  'save_review_findings',
+  'Save a summary of review findings to the project history. Call this after completing a review to enable progress tracking across reviews.',
+  {
+    summary: z
+      .string()
+      .describe('Brief summary of findings, e.g. "3 MUST FIX, 5 SHOULD FIX, 8 GOOD. Key: JWT missing orgId, role system over-engineered"'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ summary, project_path }) => {
+    const cwd = project_path || process.cwd();
+
+    try {
+      // Update the most recent review record with actual findings
+      const { loadHistory } = await import('./history.js');
+      const history = loadHistory(cwd);
+
+      if (history.reviews.length > 0) {
+        history.reviews[history.reviews.length - 1].findingSummary = summary;
+
+        const { writeFileSync, mkdirSync, existsSync } = await import('node:fs');
+        const { join } = await import('node:path');
+        const dir = join(cwd, '.archon');
+        if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+        writeFileSync(join(dir, 'history.json'), JSON.stringify(history, null, 2) + '\n');
+      }
+
+      return {
+        content: [{
+          type: 'text' as const,
+          text: `Review findings saved. ${history.reviews.length} review(s) in history. Next review will compare against these findings.`,
+        }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error saving findings: ${message}` }],
+        isError: true,
+      };
+    }
   },
 );
 

@@ -53,6 +53,23 @@ export function buildReviewPrompt(
     '',
     'Be specific: reference file paths, function names, and line numbers where possible.',
     'Estimate effort saved or cost of inaction for each finding.',
+    '',
+    '---',
+    '',
+    '## Executive Summary (generate this FIRST)',
+    '',
+    'Before diving into individual perspectives, provide a 30-second overview:',
+    '',
+    '```',
+    'MUST FIX:   [count] critical issues',
+    'SHOULD FIX: [count] improvements',
+    'GOOD:       [count] confirmed correct',
+    '',
+    'Most important finding: [one sentence — the single thing to fix first]',
+    'Estimated effort saved by addressing all MUST FIX items: [X days]',
+    '```',
+    '',
+    'Then proceed with the detailed perspective reviews below.',
   ].join('\n');
 
   return header + '\n' + sections.join('\n\n---\n');

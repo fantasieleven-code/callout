@@ -67,4 +67,11 @@ describe('buildReviewPrompt', () => {
     expect(result).toContain('express');
     expect(result).toContain('prisma');
   });
+
+  it('includes Executive Summary section', () => {
+    const result = buildReviewPrompt(mockContext);
+    expect(result).toContain('Executive Summary');
+    expect(result).toContain('Most important finding');
+    expect(result).toContain('generate this FIRST');
+  });
 });

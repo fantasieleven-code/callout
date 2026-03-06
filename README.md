@@ -1,101 +1,89 @@
 # Archon
 
-**Architecture review + product-level challenge for AI-assisted development.**
+**You used AI to write code for 3 days. Archon tells you 60% of it was over-engineered.**
 
-Archon is an MCP Server with two tools: `review` (5-perspective architecture audit) and `challenge` (questions whether your current work is worth doing). It can auto-trigger during development via CLAUDE.md rules.
+AI coding tools make you 10x faster. But nobody checks if you're building the right thing. Archon is the second pair of eyes — 5 expert perspectives that catch what you miss.
 
-## Perspectives
-
-| Perspective | Focus |
-|-------------|-------|
-| CTO | Over-engineering, tech debt, scaling bottlenecks, what to cut |
-| Security | OWASP Top 10, auth, input validation, data isolation |
-| Product | User journey gaps, missing features, competitive gaps |
-| DevOps | Deployment complexity, monitoring, backup, CI/CD |
-| Customer | Reasons to reject, experience gaps, onboarding friction |
-
-## Install
+## 30-second setup
 
 ```bash
 npm install -g archon-dev
+npx archon-dev setup
 ```
 
-## Usage with Claude Code
+That's it. Archon auto-configures your editor (Claude Code / Cursor / VS Code) and sets up smart triggers. You'll get a quick CTO review of your project immediately.
 
-Add to your `.mcp.json`:
+## What it does
 
-```json
-{
-  "mcpServers": {
-    "archon": {
-      "command": "archon",
-      "args": []
-    }
-  }
-}
-```
+### `review` — "Am I building this right?"
 
-Then in Claude Code:
+5 expert perspectives audit your codebase:
 
-```
-Use the review tool to analyze this project
-```
+| Perspective | What it catches |
+|-------------|----------------|
+| **CTO** | "Your 4-level role system only needs 2 levels. Cut it, save 3 days." |
+| **Security** | "JWT missing orgId — multi-tenant data can leak across tenants." |
+| **Product** | "HR managers won't self-register. Replace with invite-only flow." |
+| **DevOps** | "Billing doesn't need a DB table. A config object saves 1 day." |
+| **Customer** | "No compliance page = enterprise customers won't even evaluate you." |
 
 ```
-Use the challenge tool — I've been fixing this RTC bug for an hour
+> Review this project
+> Run a security + CTO review
+> Review from the perspective of an HR manager evaluating this tool
 ```
 
+### `challenge` — "Should I be building this at all?"
+
+When you've been fixing the same bug for an hour, Archon asks the hard question: is this feature even worth keeping?
+
+Checks ROI, sunk cost, complexity budget, scope creep. Returns a verdict:
+- **CONTINUE** — keep going, this is valuable
+- **SIMPLIFY** — right goal, over-engineered approach
+- **PAUSE** — validate the need before writing more code
+- **DELETE** — negative ROI, remove it
+
 ```
-Use the init tool to set up auto-trigger rules
+> Challenge what I'm working on
+> I've been on this RTC bug for an hour, is it worth it?
 ```
 
-## Tools
+Git diff and recent changes are collected automatically — zero effort from you.
 
-### `review` — Multi-perspective architecture audit
+### Smart auto-triggers
 
-Runs 5 expert viewpoints against your codebase. Options:
+After setup, Archon speaks up automatically when it matters:
 
-- `perspectives`: Array of perspectives to include (default: all five)
-- `customer_role`: Description of target customer (for customer perspective)
+- Editing the same file for the 3rd time → "Are you chasing a bug in a low-value feature?"
+- Creating a new file → "Is this new module necessary?"
+- Bug fix exceeding 30 minutes → "Should this feature be simplified or removed?"
+- Adding a new dependency → "Is there a simpler alternative?"
+- Completing a milestone → Full 5-perspective review
 
-### `challenge` — Product-level reality check
+You don't need to remember to call it. It interrupts you when it should.
 
-Questions whether your current work is worth doing. Checks ROI, sunk cost, complexity budget, and scope creep. Returns a verdict: CONTINUE / SIMPLIFY / PAUSE / DELETE. Options:
+## How it works
 
-- `git_diff`: Output of `git diff` (auto-collected by host)
-- `recent_files`: Output of `git log --oneline -10 --name-only`
-- `description`: What you're currently working on
+Archon is an [MCP](https://modelcontextprotocol.io) server. It collects your project context (file structure, dependencies, README, CLAUDE.md, git history) and assembles expert-perspective prompts. Your AI tool (Claude, Cursor, etc.) executes the review.
 
-### `init` — Set up auto-trigger rules
-
-Returns CLAUDE.md rules that make Claude Code automatically call `challenge` and `review` at the right moments:
-
-- Before creating new files
-- When modifying the same file 3+ times
-- Before adding dependencies
-- When a bug fix exceeds 30 minutes
-- After completing milestones
-
-## Usage with Other Tools
-
-Works with any MCP-compatible tool:
-
+One server, works everywhere:
+- **Claude Code**: `.mcp.json`
 - **Cursor**: `.cursor/mcp.json`
 - **VS Code**: `.vscode/mcp.json`
 - **Windsurf**: `~/.codeium/windsurf/mcp_config.json`
 
-All use the same `mcpServers` JSON structure above.
+## Output format
 
-## Output Format
+Every finding is categorized:
 
-Findings are categorized:
+- **MUST FIX** — critical issues blocking production
+- **SHOULD FIX** — improvements with clear ROI
+- **GOOD** — confirmed correct decisions
 
-- **MUST FIX**: Critical issues that block production readiness
-- **SHOULD FIX**: Important improvements with clear ROI
-- **GOOD**: Confirmed correct decisions worth keeping
+Starts with an Executive Summary so you know what to focus on in 30 seconds.
 
 ## License
 
-AGPL-3.0-or-later. See [LICENSE](LICENSE) for details.
+AGPL-3.0-or-later. See [LICENSE](LICENSE).
 
 For commercial licensing, contact the author.

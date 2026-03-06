@@ -102,6 +102,55 @@ server.tool(
 );
 
 server.tool(
+  'archon_help',
+  'Show what Archon can do and how to use it. Call this when a user first connects or asks about Archon.',
+  {},
+  async () => {
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `# Archon — Architecture Review & Product Challenge
+
+You have 4 tools available:
+
+## 1. review — "Am I building this right?"
+Full architecture audit from 5 expert perspectives.
+
+**Try saying:**
+- "Review this project"
+- "Run a security + CTO review"
+- "Review this project from the perspective of an HR manager"
+
+## 2. challenge — "Should I be building this at all?"
+Questions whether your current work is worth doing. Checks ROI, sunk cost, and scope creep.
+
+**Try saying:**
+- "Challenge what I'm working on right now"
+- "I've been fixing this bug for an hour, challenge whether it's worth it"
+- "Before I add this new feature, challenge whether we need it"
+
+## 3. init — "Set it and forget it"
+Writes auto-trigger rules into your CLAUDE.md so Archon activates automatically:
+- When you edit the same file 3+ times
+- When a bug fix takes too long
+- Before creating new files or adding dependencies
+
+**Try saying:**
+- "Initialize Archon in this project"
+
+## 4. archon_help — This message
+**Try saying:**
+- "What can Archon do?"
+
+---
+
+**Quick start:** Say "Initialize Archon in this project" to set up auto-triggers, then just code normally. Archon will speak up when it matters.`,
+      }],
+    };
+  },
+);
+
+server.tool(
   'init',
   'Initialize Archon in a project. Returns CLAUDE.md rules that enable automatic challenge/review triggers. The host should append these rules to the project\'s CLAUDE.md file.',
   {

@@ -1,6 +1,6 @@
 {
   "name": "callout-dev",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Multi-perspective architecture review via MCP. One command, five expert viewpoints.",
   "type": "module",
   "main": "dist/server.js",

@@ -188,7 +188,23 @@ interface ReviewRecord {
 
 ---
 
-## MCP Integration Points
+## Cross-Tool Compatibility
+
+### 项目记忆文件 (自动触发规则)
+
+不同工具读取不同的"规则文件"。`npx archon-dev setup` 自动检测并写入所有相关文件：
+
+| 工具 | 规则文件 | 何时写入 |
+|------|---------|---------|
+| Claude Code | `CLAUDE.md` | 始终写入 |
+| Cursor | `.cursorrules` | 检测到 `.cursor/` 目录时 |
+| Windsurf | `.windsurfrules` | 检测到 `.windsurf/` 目录时 |
+| GitHub Copilot | `.github/copilot-instructions.md` | 检测到已有此文件时 |
+| Kimi Code | 待确认 | 待支持 |
+
+所有文件写入相同的 Archon Auto-Trigger Rules 内容。
+
+### MCP配置文件
 
 所有编辑器用同一个 `mcpServers` JSON结构：
 

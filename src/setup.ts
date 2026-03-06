@@ -61,22 +61,35 @@ function writeMcpConfig(filePath: string, toolName: string): boolean {
   return true;
 }
 
-function appendClaudeMdRules(cwd: string): boolean {
-  const claudeMdPath = join(cwd, 'CLAUDE.md');
+// All rule files that different coding tools auto-read
+const RULE_FILES = [
+  { name: 'CLAUDE.md', path: (cwd: string) => join(cwd, 'CLAUDE.md') },
+  { name: '.cursorrules', path: (cwd: string) => join(cwd, '.cursorrules') },
+  { name: '.windsurfrules', path: (cwd: string) => join(cwd, '.windsurfrules') },
+  { name: '.github/copilot-instructions.md', path: (cwd: string) => join(cwd, '.github', 'copilot-instructions.md') },
+];
+
+function appendRulesToFile(filePath: string, fileName: string): boolean {
   let content = '';
 
-  if (existsSync(claudeMdPath)) {
-    content = readFileSync(claudeMdPath, 'utf-8');
+  if (existsSync(filePath)) {
+    content = readFileSync(filePath, 'utf-8');
     if (content.includes('Archon Auto-Trigger Rules')) {
-      log('⏭  CLAUDE.md: auto-trigger rules already present');
+      log(`⏭  ${fileName}: auto-trigger rules already present`);
       return false;
     }
     content += '\n\n';
   }
 
+  // Ensure parent directory exists
+  const dir = filePath.substring(0, filePath.lastIndexOf('/'));
+  if (dir && !existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
+
   content += RULES_TEMPLATE + '\n';
-  writeFileSync(claudeMdPath, content);
-  log('✅ CLAUDE.md: auto-trigger rules added');
+  writeFileSync(filePath, content);
+  log(`✅ ${fileName}: auto-trigger rules added`);
   return true;
 }
 
@@ -114,9 +127,19 @@ export function setup(cwd?: string): void {
 
   console.log('');
 
-  // Step 2: Append CLAUDE.md rules
+  // Step 2: Append rules to all coding tool config files
   console.log('  Setting up auto-trigger rules...');
-  appendClaudeMdRules(projectDir);
+  for (const ruleFile of RULE_FILES) {
+    const filePath = ruleFile.path(projectDir);
+    // Always write CLAUDE.md; others only if they already exist OR their tool's MCP was configured
+    if (ruleFile.name === 'CLAUDE.md' || existsSync(filePath)) {
+      appendRulesToFile(filePath, ruleFile.name);
+    } else if (ruleFile.name === '.cursorrules' && existsSync(join(projectDir, '.cursor'))) {
+      appendRulesToFile(filePath, ruleFile.name);
+    } else if (ruleFile.name === '.windsurfrules' && existsSync(join(projectDir, '.windsurf'))) {
+      appendRulesToFile(filePath, ruleFile.name);
+    }
+  }
 
   console.log('');
   console.log('  Done! Restart your editor, then try:');

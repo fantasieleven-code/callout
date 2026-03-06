@@ -203,8 +203,15 @@ server.tool(
     }
 
     const parts = [
-      `Please append the following rules to the CLAUDE.md file in \`${cwd}\`.`,
-      'If CLAUDE.md does not exist, create it.',
+      `Please append the following rules to the project's rule file in \`${cwd}\`.`,
+      '',
+      'Write to the appropriate file based on the current coding tool:',
+      '- Claude Code → CLAUDE.md',
+      '- Cursor → .cursorrules',
+      '- Windsurf → .windsurfrules',
+      '- GitHub Copilot → .github/copilot-instructions.md',
+      '',
+      'If the file does not exist, create it.',
       '',
       '---',
       '',

@@ -1,6 +1,6 @@
 {
   "name": "callout-dev",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Multi-perspective architecture review via MCP. One command, five expert viewpoints.",
   "type": "module",
   "main": "dist/server.js",
@@ -14,7 +14,7 @@
     "callout-dev": "dist/setup.js"
   },
   "scripts": {
-    "prebuild": "rm -rf dist",
+    "prebuild": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "tsc",
     "prepublishOnly": "npm run build && npm test",
     "dev": "tsc --watch",

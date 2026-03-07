@@ -250,4 +250,6 @@ See [docs/architecture.md](docs/architecture.md) for technical details.
 
 [AGPL-3.0-or-later](LICENSE).
 
+**Using Callout as a development tool** (its primary use case — running it locally via `npx` or MCP) **is free** and does not trigger AGPL obligations. The AGPL only applies if you redistribute or embed Callout's source code in your own product.
+
 **Commercial licensing**: If you embed Callout in a closed-source product, SaaS, or proprietary tool, you need a commercial license. Contact: **callout@callout.dev**

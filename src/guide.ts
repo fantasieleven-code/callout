@@ -14,23 +14,34 @@ export function detectStage(context: ProjectContext): ProjectStage {
   // Has code but no tests → building
   if (stats.testFiles === 0) return 'building';
 
-  // Has tests but no deployment/landing indicators → testing
-  const hasDeployScript = packageJson?.scripts
-    ? Object.keys(packageJson.scripts).some(s => ['deploy', 'start'].includes(s))
-    : false;
-  const hasDeployment = fileTree.includes('Dockerfile') ||
+  // Has tests — check if ready for launch using weighted signals
+  // CI alone doesn't mean launch-ready (many early projects have CI)
+  let launchSignals = 0;
+
+  const hasDeployConfig = fileTree.includes('Dockerfile') ||
     fileTree.includes('docker-compose') ||
-    fileTree.includes('.github/workflows') ||
     fileTree.includes('vercel.json') ||
     fileTree.includes('netlify.toml') ||
     fileTree.includes('fly.toml') ||
     fileTree.includes('render.yaml') ||
     fileTree.includes('railway.json') ||
-    fileTree.includes('app.yaml') ||
-    hasDeployScript;
-  const hasLanding = fileTree.includes('landing') || fileTree.includes('Landing');
+    fileTree.includes('app.yaml');
+  if (hasDeployConfig) launchSignals += 2;
 
-  if (!hasDeployment && !hasLanding) return 'testing';
+  const hasDeployScript = packageJson?.scripts
+    ? Object.keys(packageJson.scripts).some(s => s === 'deploy')
+    : false;
+  if (hasDeployScript) launchSignals++;
+
+  const hasLanding = fileTree.includes('landing') || fileTree.includes('Landing');
+  if (hasLanding) launchSignals += 2;
+
+  // CI alone is worth 1 signal — not enough for launch
+  const hasCI = fileTree.includes('.github/workflows');
+  if (hasCI) launchSignals++;
+
+  // Need at least 3 signals to be considered launch stage
+  if (launchSignals < 3) return 'testing';
 
   return 'launch';
 }

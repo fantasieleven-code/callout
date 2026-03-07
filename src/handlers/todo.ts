@@ -17,14 +17,21 @@ export function registerTodoTools(server: McpServer): void {
     },
     async ({ title, description, priority, source, project_path }) => {
       const cwd = resolvePath(project_path);
-      const item = addTodo(cwd, title, description || '', priority, source || 'user');
-
-      return {
-        content: [{
-          type: 'text' as const,
-          text: `Added todo #${item.id}: [${priority.toUpperCase()}] ${title}`,
-        }],
-      };
+      try {
+        const item = addTodo(cwd, title, description || '', priority, source || 'user');
+        return {
+          content: [{
+            type: 'text' as const,
+            text: `Added todo #${item.id}: [${priority.toUpperCase()}] ${title}`,
+          }],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return {
+          content: [{ type: 'text' as const, text: message }],
+          isError: true,
+        };
+      }
     },
   );
 
@@ -41,13 +48,13 @@ export function registerTodoTools(server: McpServer): void {
     },
     async ({ id, status, title, description, priority, project_path }) => {
       const cwd = resolvePath(project_path);
-      const updates: Record<string, unknown> = {};
-      if (status) updates.status = status;
+      const updates: Partial<Pick<import('../todo.js').TodoItem, 'status' | 'title' | 'description' | 'priority'>> = {};
+      if (status) updates.status = status as TodoStatus;
       if (title) updates.title = title;
       if (description) updates.description = description;
-      if (priority) updates.priority = priority;
+      if (priority) updates.priority = priority as Priority;
 
-      const item = updateTodo(cwd, id, updates as { status?: TodoStatus; title?: string; description?: string; priority?: Priority });
+      const item = updateTodo(cwd, id, updates);
 
       if (!item) {
         return {

@@ -45,7 +45,7 @@ describe('detectStage', () => {
   it('detects launch stage (has deployment config)', () => {
     expect(detectStage(makeContext({
       packageJson: { name: 'app' },
-      fileTree: 'src/\nDockerfile\n',
+      fileTree: 'src/\nDockerfile\nlanding/\n.github/workflows/',
       stats: { totalFiles: 50, testFiles: 10, codeLines: 5000 },
     }))).toBe('launch');
   });

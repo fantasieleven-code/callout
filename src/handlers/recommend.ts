@@ -101,17 +101,18 @@ export function registerRecommendTools(server: McpServer): void {
         return {
           content: [{
             type: 'text' as const,
-            text: 'No dismissed scenarios to reset.',
+            text: 'No dismissed scenarios. All recommendation scenarios are active.',
           }],
         };
       }
 
+      const dismissedList = dismissed.dismissed.join(', ');
       const cleared = resetDismissed(cwd);
 
       return {
         content: [{
           type: 'text' as const,
-          text: `Reset ${cleared.length} dismissed scenario(s): ${cleared.join(', ')}. Running \`recommend\` will now detect these again.`,
+          text: `Reset ${cleared.length} dismissed scenario(s): ${dismissedList}. Running \`recommend\` will now detect these again.`,
         }],
       };
     },

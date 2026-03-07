@@ -110,17 +110,25 @@ export async function collectContext(cwd: string): Promise<ProjectContext> {
   const testFiles = files.filter(f => TEST_PATTERNS.some(p => p.test(f)));
 
   const MAX_FILE_SIZE = 1_000_000; // 1MB — skip large files for line counting
+  const CONCURRENCY = 10;
   let codeLines = 0;
-  for (const f of codeFiles.slice(0, 200)) {
-    try {
-      const filePath = join(cwd, f);
-      const fileStat = await stat(filePath);
-      if (fileStat.size > MAX_FILE_SIZE) continue;
-      const content = await readFile(filePath, 'utf-8');
-      codeLines += content.split('\n').length;
-    } catch {
-      // skip unreadable files
-    }
+  const filesToCount = codeFiles.slice(0, 200);
+  for (let i = 0; i < filesToCount.length; i += CONCURRENCY) {
+    const batch = filesToCount.slice(i, i + CONCURRENCY);
+    const results = await Promise.all(
+      batch.map(async (f) => {
+        try {
+          const filePath = join(cwd, f);
+          const fileStat = await stat(filePath);
+          if (fileStat.size > MAX_FILE_SIZE) return 0;
+          const content = await readFile(filePath, 'utf-8');
+          return content.split('\n').length;
+        } catch {
+          return 0;
+        }
+      }),
+    );
+    for (const count of results) codeLines += count;
   }
 
   // Build tree (top 3 levels for brevity)

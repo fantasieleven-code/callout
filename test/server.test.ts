@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { server } from '../src/server.js';
 
-// McpServer stores tools in a plain object: _registeredTools
-// Server info is at server.server._serverInfo
+// Accessing MCP SDK internals — tested with @modelcontextprotocol/sdk ^1.12.1
+// _registeredTools: plain object keyed by tool name (not a Map)
+// server.server._serverInfo: { name, version } set during McpServer construction
+// If these break after an SDK upgrade, check the McpServer class internals
 const registeredTools = (server as unknown as { _registeredTools: Record<string, unknown> })._registeredTools;
 const innerServer = (server as unknown as { server: { _serverInfo: { name: string; version: string } } }).server;
 

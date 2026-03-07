@@ -62,6 +62,8 @@ function saveTodos(cwd: string, todos: TodoList): void {
   writeFileSync(todoPath(cwd), JSON.stringify(todos, null, 2) + '\n');
 }
 
+const MAX_TODO_ITEMS = 500;
+
 export function addTodo(
   cwd: string,
   title: string,
@@ -70,6 +72,12 @@ export function addTodo(
   source: string,
 ): TodoItem {
   const todos = loadTodos(cwd);
+
+  const activeItems = todos.items.filter(t => t.status !== 'done' && t.status !== 'wont_do');
+  if (activeItems.length >= MAX_TODO_ITEMS) {
+    throw new Error(`Todo list has ${activeItems.length} active items (limit: ${MAX_TODO_ITEMS}). Mark some items as done or wont_do before adding more.`);
+  }
+
   const now = new Date().toISOString();
 
   const item: TodoItem = {

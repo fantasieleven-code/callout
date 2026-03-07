@@ -19,12 +19,19 @@ Example: if you are editing \`/Users/alice/projects/my-app/src/auth.ts\`, pass \
 - **Before adding a new dependency**: Challenge whether a simpler alternative exists
 - **When a bug fix exceeds 30 minutes**: Challenge whether the buggy feature should be simplified or removed
 
+### Auto-Plan (discuss before coding)
+- **When the user describes a new feature or requirement**: Do NOT start writing code immediately. First call \`challenge\` (is this worth building?) and \`validate\` (what's the best approach?). Discuss architecture, scope, and trade-offs with the user. Only start implementation after the user explicitly says "go ahead", "start coding", "implement it", or similar confirmation.
+- **When opening a new/empty project for the first time**: Call \`guide\` to discuss project planning — stage, priorities, and what to build first. Do not generate boilerplate or scaffold code until the user confirms the plan.
+- **When the user asks to add a major dependency or service** (database, auth, payments, etc.): Call \`validate\` to discuss alternatives before installing or integrating anything.
+
 ### Auto-Review (use the \`review\` tool)
 - **After completing a major feature or milestone**: Run a full 5-perspective review
 - **Before creating a pull request**: Run CTO + Security perspectives at minimum
 - **When starting work on a new project**: Run a full review to understand the codebase
 
 ### Rules
+- **Plan before code**: When Auto-Plan triggers, stay in discussion mode. Present findings, ask questions, and wait for the user to decide. Do not write files, install packages, or generate code until the user explicitly approves the approach.
+- **Discussion ≠ inaction**: During Auto-Plan, actively use Callout tools to provide structured analysis. The goal is informed decision-making, not delays.
 - When challenge returns DELETE or PAUSE: Stop current work, present the finding to the user, and wait for their decision before continuing
 - When challenge returns SIMPLIFY: Present the simpler approach and ask the user which path to take
 - When challenge returns CONTINUE: Proceed without interruption

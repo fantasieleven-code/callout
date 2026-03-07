@@ -1,9 +1,18 @@
 import type { ProjectContext } from '../types.js';
 
 export function customerBuildPrompt(ctx: ProjectContext, customerRole?: string): string {
+  const hasExplicitRole = !!customerRole;
   const role = customerRole || 'a potential user evaluating this product for the first time';
 
+  const inferBlock = hasExplicitRole
+    ? ''
+    : `
+
+> NOTE: No specific target user has been set for this project. Before reviewing, first infer who the most likely target user is based on the README, project description, and tech stack above. State your assumption clearly (e.g. "I'm reviewing as: a small business owner looking for invoicing software") before proceeding. If the project has set a target user via \`set_target_user\`, that will be used automatically in future reviews.
+`;
+
   return `You are ${role}. You are evaluating this product and deciding whether to adopt it.
+${inferBlock}
 
 ## Project Context
 - **Name**: ${ctx.name}

@@ -20,6 +20,7 @@ import { buildCleanupPrompt } from './prompts/cleanup.js';
 import { buildValidatePrompt } from './prompts/validate.js';
 import { detectScenes, buildRecommendPrompt } from './prompts/recommend.js';
 import { filterDismissed, dismissScene, loadDismissed, resetDismissed } from './recommend.js';
+import { getTargetUser, saveConfig, loadConfig } from './config.js';
 import type { Scene } from './prompts/recommend.js';
 import type { Perspective } from './types.js';
 import type { Priority, TodoStatus } from './todo.js';
@@ -67,10 +68,20 @@ server.tool(
     try {
       const context = await collectContext(cwd);
       const selectedPerspectives = (perspectives as Perspective[] | undefined) || ['cto', 'security', 'product', 'devops', 'customer'];
+
+      // Auto-detect target user if customer perspective is included and no explicit role given
+      let resolvedCustomerRole = customer_role;
+      if (!resolvedCustomerRole && selectedPerspectives.includes('customer')) {
+        const detectedUser = getTargetUser(cwd, context);
+        if (detectedUser) {
+          resolvedCustomerRole = detectedUser;
+        }
+      }
+
       const prompt = buildReviewPrompt(
         context,
         selectedPerspectives,
-        customer_role,
+        resolvedCustomerRole,
         focus,
       );
 
@@ -782,6 +793,31 @@ server.tool(
       content: [{
         type: 'text' as const,
         text: `Reset ${cleared.length} dismissed scenario(s): ${cleared.join(', ')}. Running \`recommend\` will now detect these again.`,
+      }],
+    };
+  },
+);
+
+server.tool(
+  'set_target_user',
+  'Set who the target user of this project is. This is used by the customer perspective in reviews to give feedback as that specific type of user. Auto-detected from README/CLAUDE.md if not set manually.',
+  {
+    target_user: z
+      .string()
+      .describe('Description of the target user. E.g. "non-technical founder using AI to build SaaS", "enterprise HR manager evaluating compliance tools", "indie developer looking for deployment solutions"'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ target_user, project_path }) => {
+    const cwd = resolvePath(project_path);
+    saveConfig(cwd, { target_user });
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Target user set to: "${target_user}". All future reviews with customer perspective will evaluate the product as this user.`,
       }],
     };
   },

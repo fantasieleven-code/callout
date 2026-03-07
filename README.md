@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![npm downloads](https://img.shields.io/npm/dm/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/fantasieleven-code/Callout)
+[![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
 
 **You used AI to write code for 3 days. Callout tells you 60% of it was over-engineered.**
 
@@ -65,6 +65,22 @@ Git diff and recent changes are collected automatically — zero effort from you
 ### `guide` — What should I be thinking about right now?
 
 Detects your project stage (research → architecture → building → testing → launch) and surfaces the questions you should be asking but aren't.
+
+### `spot_check` — Is this code safe to ship?
+
+Quick security scan for AI-generated code. Flags only the dangerous stuff — vulnerabilities, logic errors — in under 10 seconds. Not a full audit, just "can I trust this output?"
+
+### `test_translate` — What do I actually need to test manually?
+
+Parses test output and tells you in plain language: what's automated, what needs manual verification, and gives you a 15-minute manual test script.
+
+### `cleanup` — What can I delete?
+
+Scans for dead code, duplicate files, unused dependencies, and modules that should be merged. Returns concrete steps: delete this, merge that.
+
+### `validate` — Should I use X or Y?
+
+Technical decision validator. "Should I use Supabase or Firebase?" — gives you a verdict, confidence level, and alternatives based on your project's stage, scale, and stack.
 
 ### Smart auto-triggers
 
@@ -138,6 +154,10 @@ Add to your editor's MCP config file:
 | `review` | 5-perspective architecture review |
 | `challenge` | Question whether current work is worth doing |
 | `guide` | Stage detection + checklist of questions to ask |
+| `spot_check` | Quick security scan for AI-generated code |
+| `test_translate` | Turn test output into plain-language manual test plan |
+| `cleanup` | Find dead code, duplicates, unused deps |
+| `validate` | Technical decision validator with confidence scoring |
 | `todo_add` | Add a finding to the project todo list |
 | `todo_update` | Update todo status |
 | `todo_list` | View todos, filtered by priority or status |
@@ -152,9 +172,8 @@ Add to your editor's MCP config file:
 
 See [docs/roadmap.md](docs/roadmap.md) for the full plan.
 
-**V0.1** (current): 10 MCP tools, 40 tests, cross-editor support
-**V0.2** (next): `spot-check`, `test-translate`, `cleanup`, `validate` + npm publish
-**V1.0**: Web UI dashboard, cloud sync, custom perspectives, paid tier
+**V0.2** (current): 14 MCP tools, 63 tests, cross-editor support, npm published
+**V1.0** (next): Web UI dashboard, cloud sync, custom perspectives, paid tier
 
 ---
 

@@ -71,6 +71,16 @@ Tools: todo_add, todo_update, todo_list, todo_summary
 
 **Try:** "Show my todos" / "What's my top priority?" / "Mark todo #3 as done"
 
+### set_target_user — Set who your target user is
+Tell Callout who uses your product (e.g. "enterprise HR managers"). All future reviews with customer perspective will evaluate from their point of view. Auto-detected from README if not set.
+
+**Try:** "Set target user to startup CTOs" / "My users are non-technical founders"
+
+### recommend_reset — Re-enable dismissed recommendations
+If recommendations were dismissed by mistake, reset them so recommend detects those scenarios again.
+
+**Try:** "Reset recommendations"
+
 ### init — One-time setup
 Sets up auto-triggers so Callout speaks up automatically during development.
 

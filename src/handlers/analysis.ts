@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
@@ -169,8 +169,15 @@ export function registerAnalysisTools(server: McpServer): void {
 
       if (!codeContent && file_path) {
         const cwd = resolvePath(project_path);
-        const resolvedFile = resolve(file_path);
-        const resolvedProject = resolve(cwd);
+        let resolvedFile: string;
+        let resolvedProject: string;
+        try {
+          resolvedFile = realpathSync(resolve(file_path));
+          resolvedProject = realpathSync(resolve(cwd));
+        } catch {
+          resolvedFile = resolve(file_path);
+          resolvedProject = resolve(cwd);
+        }
         if (!resolvedFile.startsWith(resolvedProject + '/') && resolvedFile !== resolvedProject) {
           return {
             content: [{ type: 'text' as const, text: `Error: file_path must be within project_path. Got "${file_path}" outside "${resolvedProject}".` }],

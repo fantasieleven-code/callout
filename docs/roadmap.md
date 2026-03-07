@@ -26,16 +26,28 @@
 
 ---
 
-## V0.3 — 工具推荐
+## V0.3 — 已发布 ✅
 
-- **recommend**: 检测任务类型，推荐最佳工具/MCP/插件
-- Auto-trigger 集成
+**18 MCP tools, 88 tests**
+
+| 新功能 | 说明 |
+|--------|------|
+| recommend | 14 种场景检测，推荐最佳工具 + 安装命令 + 上手步骤 |
+| recommend_dismiss / reset | 场景管理，同场景不重复推荐 |
+| review focus | 聚焦审查特定功能/页面，保留全项目上下文 |
+| set_target_user | 自动检测目标用户，customer 视角以真实用户身份审查 |
+| 5 点自动触发 | plan → stuck → complete → pre-ship → direction check |
+| 用户引导 | init 快速开始表格 + 首次对话自动 help |
+
+安全 + 质量: 路径穿越修复、bin 入口修复、文件大小限制、prepublishOnly
 
 ---
 
-## V1.0 — 产品化
+## V1.0 — 产品化 (下一步)
 
 - Streamable HTTP 传输 (远程审查)
+- server.ts 模块化拆分
+- MCP server 集成测试
 - CLAUDE.md 自动维护 (跨窗口记忆)
 - 跨项目经验积累
 - Web UI 仪表盘

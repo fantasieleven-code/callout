@@ -1,7 +1,7 @@
 # Callout — Roadmap
 
 > 更新: 2026-03-07
-> 状态: V0.2.5 发布准备中
+> 状态: V0.3.4 已发布
 
 ---
 
@@ -27,19 +27,29 @@
 
 ---
 
-## Phase 2.5: V0.3 — 工具推荐
+## Phase 2.5: V0.3 — 工具推荐 + 聚焦审查 + 用户视角 ✅
 
-- [ ] **recommend**: 检测任务类型，推荐最佳工具/MCP/插件
-- [ ] Auto-trigger: 连续修改同类文件时自动推荐
+- [x] **recommend**: 14 种场景检测，推荐最佳工具 + 安装命令
+- [x] **recommend_dismiss / recommend_reset**: 场景管理，同场景不重复推荐
+- [x] **review focus**: 聚焦审查特定功能/页面/决策，保留全项目上下文
+- [x] **set_target_user**: 自动检测 + 手动设置目标用户，customer 视角全覆盖
+- [x] **5 点自动触发**: plan / stuck / complete / pre-ship / direction check
+- [x] **用户引导**: init 展示快速开始表格 + 首次对话自动 help
+- [x] **安全修复**: 路径穿越、bin 入口、文件大小限制、git cwd 校验
+- [x] **代码质量**: prepublishOnly、try/catch 权限、JSON.parse 防护、版本比较修复
+- [x] 18 MCP tools, 88 tests
 
 ---
 
 ## Phase 3: V1.0 — 产品化
 
+- [ ] server.ts 拆分 (工具注册模块化)
+- [ ] MCP server 集成测试
 - [ ] Streamable HTTP 传输 (支持远程审查)
 - [ ] CLAUDE.md 自动维护 (跨窗口记忆)
 - [ ] 跨项目经验积累
 - [ ] Web UI (仪表盘 + 审查历史可视化)
+- [ ] 自定义审查视角 (用户自定义 perspective prompt)
 - [ ] 付费层 + Landing page
 
 ---
@@ -49,20 +59,20 @@
 - [ ] 行业基准对比
 - [ ] 趋势追踪
 - [ ] 自动修复 PR
-- [ ] 自定义视角市场
+- [ ] 自定义视角市场 (社区贡献)
 - [ ] Team 功能
+- [ ] Enterprise
 
 ---
 
 ## Phase 5: V3.0 — 全程领航员
 
 - [ ] 规划生成引擎 (需求 → Roadmap + 架构 + Todo)
-- [ ] 上线后监控
-- [ ] Enterprise
+- [ ] 调研阶段集成 (竞品分析)
+- [ ] 上线后监控 (反馈 → todo)
 
 ---
 
 ## 待确认
 
 - [ ] Kimi Code 规则文件格式
-- [ ] Callout 自身的 Auto-trigger 规则

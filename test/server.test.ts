@@ -50,6 +50,15 @@ describe('MCP Server integration', () => {
     expect(innerServer._serverInfo.version).toMatch(/^\d+\.\d+\.\d+/);
   });
 
+  it('should have instructions set for auto-trigger without init', () => {
+    const instructions = (innerServer as unknown as { _instructions?: string })._instructions;
+    expect(instructions).toBeDefined();
+    expect(instructions).toContain('project_path');
+    expect(instructions).toContain('Multi-Perspective');
+    expect(instructions).toContain('Auto-Plan');
+    expect(instructions).toContain('callout_help');
+  });
+
   it('should not start transport when imported (isMainModule guard)', () => {
     // If we got here without hanging, the guard works
     expect(true).toBe(true);

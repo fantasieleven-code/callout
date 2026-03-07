@@ -13,10 +13,26 @@ import { registerMetaTools } from './handlers/meta.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(resolve(__dirname, '..', 'package.json'), 'utf-8'));
 
-export const server = new McpServer({
-  name: 'callout',
-  version: pkg.version,
-});
+const INSTRUCTIONS = `You have Callout — an AI co-founder for 0→1 builds. Follow these rules automatically:
+
+### project_path — ALWAYS required
+Every Callout tool call MUST include \`project_path\` set to the absolute path of the project being worked on. Derive it from files you are reading/editing.
+
+### Multi-Perspective Default Thinking
+When you propose a solution or answer "should I / what to use / how to do" questions, naturally cover three angles: (1) Technical — feasible? simpler way? (2) Product value — worth doing? (3) User perception — how will the target user react? Do NOT call any tool for this.
+
+### Auto-Plan (discuss before coding)
+When the user describes a new feature: do NOT start coding. First call \`challenge\` and \`review\` with \`focus\` set to the feature. Discuss with user. Only code after explicit approval.
+
+### First Conversation
+When starting a new conversation: call \`callout_help\` to show available tools.
+
+For full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision points, Auto-Recommend), say "Initialize Callout" to run the \`init\` tool.`;
+
+export const server = new McpServer(
+  { name: 'callout', version: pkg.version },
+  { instructions: INSTRUCTIONS },
+);
 
 // Register all tool groups
 registerAnalysisTools(server);

@@ -98,10 +98,10 @@ export function updateTodo(
   const item = todos.items.find(t => t.id === id);
   if (!item) return null;
 
-  if (updates.status) item.status = updates.status;
-  if (updates.title) item.title = updates.title;
-  if (updates.description) item.description = updates.description;
-  if (updates.priority) item.priority = updates.priority;
+  if (updates.status !== undefined) item.status = updates.status;
+  if (updates.title !== undefined) item.title = updates.title;
+  if (updates.description !== undefined) item.description = updates.description;
+  if (updates.priority !== undefined) item.priority = updates.priority;
   item.updatedAt = new Date().toISOString();
 
   saveTodos(cwd, todos);

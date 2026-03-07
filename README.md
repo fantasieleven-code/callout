@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![npm downloads](https://img.shields.io/npm/dm/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
+[![Tests](https://img.shields.io/badge/tests-75%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
 
 **You used AI to write code for 3 days. Callout tells you 60% of it was over-engineered.**
 
@@ -91,6 +91,16 @@ Scans for dead code, duplicate files, unused dependencies, and modules that shou
 
 Technical decision validator. "Should I use Supabase or Firebase?" — gives you a verdict, confidence level, and alternatives based on your project's stage, scale, and stack.
 
+### `recommend` — What tools should I use?
+
+Detects what your project needs (auth, database, payments, email, deployment, etc.) and recommends the best tool for each scenario — with install commands, setup steps, and alternatives. Considers your existing dependencies so it never recommends what you already have. Same scenario is only recommended once.
+
+```
+> Recommend tools for this project
+> What should I use for authentication?
+> I need to add payments
+```
+
 ### Smart auto-triggers
 
 After setup, Callout speaks up automatically when it matters:
@@ -100,6 +110,7 @@ After setup, Callout speaks up automatically when it matters:
 - Bug fix exceeding 30 minutes → "Should this feature be simplified or removed?"
 - Adding a new dependency → "Is there a simpler alternative?"
 - Completing a milestone → Full 5-perspective review
+- Starting work that needs auth, payments, etc. → Tool recommendation
 
 You don't need to remember to call it. It interrupts you when it should.
 
@@ -180,6 +191,8 @@ claude mcp add callout -- npx callout-dev
 | `todo_summary` | Project health overview |
 | `init` | Initialize Callout + auto-trigger rules |
 | `save_review_findings` | Persist review summary for progress tracking |
+| `recommend` | Detect project needs and recommend best tools with install commands |
+| `recommend_dismiss` | Dismiss a recommendation scenario so it won't be suggested again |
 | `callout_help` | Show usage guide |
 
 ---
@@ -188,7 +201,7 @@ claude mcp add callout -- npx callout-dev
 
 See [docs/roadmap.md](docs/roadmap.md) for the full plan.
 
-**V0.2** (current): 14 MCP tools, 63 tests, cross-editor support, npm published
+**V0.3** (current): 16 MCP tools, 75 tests, cross-editor support, tool recommendations, npm published
 **V1.0** (next): Web UI dashboard, cloud sync, custom perspectives, paid tier
 
 ---

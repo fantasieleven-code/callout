@@ -94,7 +94,14 @@ export async function collectContext(cwd: string): Promise<ProjectContext> {
 
   // Read key files
   const packageJsonRaw = await readFileOrNull(join(cwd, 'package.json'));
-  const packageJson = packageJsonRaw ? JSON.parse(packageJsonRaw) as PackageJson : null;
+  let packageJson: PackageJson | null = null;
+  if (packageJsonRaw) {
+    try {
+      packageJson = JSON.parse(packageJsonRaw) as PackageJson;
+    } catch {
+      // malformed package.json — treat as absent
+    }
+  }
   const readme = await readFileOrNull(join(cwd, 'README.md'));
   const claudeMd = await readFileOrNull(join(cwd, 'CLAUDE.md'));
 
@@ -102,10 +109,14 @@ export async function collectContext(cwd: string): Promise<ProjectContext> {
   const codeFiles = files.filter(f => CODE_EXTENSIONS.has(extname(f)));
   const testFiles = files.filter(f => TEST_PATTERNS.some(p => p.test(f)));
 
+  const MAX_FILE_SIZE = 1_000_000; // 1MB — skip large files for line counting
   let codeLines = 0;
   for (const f of codeFiles.slice(0, 200)) {
     try {
-      const content = await readFile(join(cwd, f), 'utf-8');
+      const filePath = join(cwd, f);
+      const fileStat = await stat(filePath);
+      if (fileStat.size > MAX_FILE_SIZE) continue;
+      const content = await readFile(filePath, 'utf-8');
       codeLines += content.split('\n').length;
     } catch {
       // skip unreadable files

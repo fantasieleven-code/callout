@@ -80,7 +80,7 @@ function appendRulesToFile(filePath: string, fileName: string): boolean {
       const versionMatch = content.match(/<!-- callout-rules-version:(\d+) -->/);
       const existingVersion = versionMatch ? versionMatch[1] : '0';
 
-      if (existingVersion >= RULES_VERSION) {
+      if (parseInt(existingVersion, 10) >= parseInt(RULES_VERSION, 10)) {
         log(`⏭  ${fileName}: auto-trigger rules already up to date (v${RULES_VERSION})`);
         return false;
       }
@@ -170,4 +170,7 @@ export function setup(cwd?: string): void {
 const args = process.argv.slice(2);
 if (args[0] === 'setup') {
   setup(args[1]);
+} else {
+  // No args → start MCP server (used by MCP clients via `npx callout-dev`)
+  await import('./server.js');
 }

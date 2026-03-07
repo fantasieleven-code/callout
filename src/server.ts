@@ -521,19 +521,26 @@ server.tool(
     let resolvedFilename = filename;
 
     if (!codeContent && file_path) {
-      // Validate file_path is within project boundary
-      if (project_path) {
-        const resolvedFile = resolve(file_path);
-        const resolvedProject = resolve(project_path);
-        if (!resolvedFile.startsWith(resolvedProject + '/') && resolvedFile !== resolvedProject) {
-          return {
-            content: [{ type: 'text' as const, text: `Error: file_path must be within project_path. Got "${file_path}" outside "${project_path}".` }],
-            isError: true,
-          };
-        }
+      // Always validate file_path is within project boundary
+      const cwd = resolvePath(project_path);
+      const resolvedFile = resolve(file_path);
+      const resolvedProject = resolve(cwd);
+      if (!resolvedFile.startsWith(resolvedProject + '/') && resolvedFile !== resolvedProject) {
+        return {
+          content: [{ type: 'text' as const, text: `Error: file_path must be within project_path. Got "${file_path}" outside "${resolvedProject}".` }],
+          isError: true,
+        };
       }
       try {
         const { basename } = await import('node:path');
+        const { statSync } = await import('node:fs');
+        const fileSize = statSync(file_path).size;
+        if (fileSize > 1_000_000) {
+          return {
+            content: [{ type: 'text' as const, text: `Error: file is too large (${(fileSize / 1_000_000).toFixed(1)}MB). spot_check supports files up to 1MB.` }],
+            isError: true,
+          };
+        }
         codeContent = readFileSync(file_path, 'utf-8');
         if (!resolvedFilename) resolvedFilename = basename(file_path);
       } catch (error) {
@@ -693,15 +700,17 @@ server.tool(
         };
       }
 
-      // Mark these scenes as dismissed so they won't be recommended again
-      for (const scene of scenes) {
-        dismissScene(cwd, scene);
-      }
-
       const prompt = buildRecommendPrompt(context, scenes, task);
+      const sceneList = scenes.map((s) => `"${s}"`).join(', ');
 
       return {
-        content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
+        content: [
+          { type: 'text' as const, text: withPathHeader(prompt, cwd) },
+          {
+            type: 'text' as const,
+            text: `\n\n---\n\nAfter the user has seen these recommendations, call \`recommend_dismiss\` for each scenario to avoid repeating: ${sceneList}. If the user says they don't need a particular recommendation, dismiss that scenario too.`,
+          },
+        ],
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

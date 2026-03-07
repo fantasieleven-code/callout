@@ -18,6 +18,9 @@ import { buildSpotCheckPrompt } from './prompts/spot-check.js';
 import { buildTestTranslatePrompt } from './prompts/test-translate.js';
 import { buildCleanupPrompt } from './prompts/cleanup.js';
 import { buildValidatePrompt } from './prompts/validate.js';
+import { detectScenes, buildRecommendPrompt } from './prompts/recommend.js';
+import { filterDismissed, dismissScene } from './recommend.js';
+import type { Scene } from './prompts/recommend.js';
 import type { Perspective } from './types.js';
 import type { Priority, TodoStatus } from './todo.js';
 
@@ -201,6 +204,11 @@ Finds dead code, duplicate logic, unused dependencies, and over-engineering. Ret
 Validates technology decisions in context. Gives a direct verdict with reasoning and confidence level.
 
 **Try:** "Should I use Supabase or Planetscale?" / "Is Redis worth adding now?"
+
+### recommend — "What tools should I use for this?"
+Detects what your project needs (auth, database, payments, deployment, etc.) and recommends the best tool for each scenario. Considers your existing dependencies and current task. Same scenario is only recommended once.
+
+**Try:** "Recommend tools" / "What should I use for auth?" / "I need to add payments"
 
 ### save_review_findings — Save review results
 After a review, saves findings summary to history for progress tracking across reviews.
@@ -624,6 +632,83 @@ server.tool(
         isError: true,
       };
     }
+  },
+);
+
+// --- recommend tool ---
+
+server.tool(
+  'recommend',
+  'Detect what the project needs and recommend the best tool/service for each scenario. Recommends auth, database, payments, deployment tools etc. based on current task and existing dependencies. Same scenario is not recommended twice.',
+  {
+    task: z
+      .string()
+      .optional()
+      .describe('What the user is currently working on or about to build. E.g. "add user login" or "set up payments".'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ task, project_path }) => {
+    const cwd = resolvePath(project_path);
+
+    try {
+      const context = await collectContext(cwd);
+      const allScenes = detectScenes(context, task);
+      const scenes = filterDismissed(cwd, allScenes);
+
+      if (scenes.length === 0) {
+        const msg = allScenes.length > 0
+          ? `All detected scenarios (${allScenes.join(', ')}) have already been recommended. No new recommendations.`
+          : 'No tool recommendation scenarios detected for the current task and project state.';
+        return {
+          content: [{ type: 'text' as const, text: msg }],
+        };
+      }
+
+      // Mark these scenes as dismissed so they won't be recommended again
+      for (const scene of scenes) {
+        dismissScene(cwd, scene);
+      }
+
+      const prompt = buildRecommendPrompt(context, scenes, task);
+
+      return {
+        content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return {
+        content: [{ type: 'text' as const, text: `Error: ${message}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+server.tool(
+  'recommend_dismiss',
+  'Dismiss a recommendation scenario so it won\'t be suggested again. Use when the user says they don\'t need a recommendation for a particular area.',
+  {
+    scene: z
+      .string()
+      .describe('The scenario to dismiss. E.g. "auth", "database", "payments".'),
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ scene, project_path }) => {
+    const cwd = resolvePath(project_path);
+    dismissScene(cwd, scene as Scene);
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Dismissed "${scene}" — this scenario won't be recommended again for this project.`,
+      }],
+    };
   },
 );
 

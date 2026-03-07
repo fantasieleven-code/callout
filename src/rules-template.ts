@@ -2,7 +2,7 @@
  * CLAUDE.md auto-trigger rules template.
  * Users copy this into their project's CLAUDE.md to enable automatic Callout triggers.
  */
-export const RULES_VERSION = '2';
+export const RULES_VERSION = '3';
 
 export const RULES_TEMPLATE = `
 <!-- callout-rules-version:${RULES_VERSION} -->
@@ -39,4 +39,10 @@ Example: if you are editing \`/Users/alice/projects/my-app/src/auth.ts\`, pass \
 - When challenge returns SIMPLIFY: Present the simpler approach and ask the user which path to take
 - When challenge returns CONTINUE: Proceed without interruption
 - Do NOT suppress or summarize Callout's findings — show them in full
+
+### Auto-Recommend (use the \`recommend\` tool)
+- **When the user starts building a feature that needs a new tool category** (auth, payments, database, email, file uploads, search, analytics, monitoring, deployment): Call \`recommend\` with a \`task\` description so Callout can suggest the best tool for their situation.
+- **When the user asks "what should I use for X?"**: Call \`recommend\` with the question as the \`task\`.
+- Callout tracks which scenarios have already been recommended — the same scenario will not be suggested twice.
+- If the user says they don't need a recommendation, call \`recommend_dismiss\` to suppress that scenario.
 `.trim();

@@ -65,14 +65,14 @@
 
 ### 内容
 
-- [ ] **Twitter 线程**: "6天用AI建了一个完整产品，691个测试。然后发现60%是过度设计。"
+- [x] **Twitter 线程**: "6天用AI建了一个完整产品，691个测试。然后发现60%是过度设计。" ✅ (docs/twitter-thread.md)
   - 配图: 代码量/测试数/审查前后对比
   - 结尾: 引出 Callout
-- [ ] **博客文章**: "AI写的代码1.7x更多问题——你需要第二双眼睛"
+- [x] **博客文章**: "AI写的代码1.7x更多问题——你需要第二双眼睛" ✅ (docs/blog-draft.md)
   - 用 CodeLens 作为真实案例
   - 数据: 9天→3.5天, 15个AR项, 专利方向
-- [ ] **GitHub README 优化**
-  - 加 GIF/截图展示实际使用效果
+- [x] **GitHub README 优化** ✅
+  - 加 GIF/截图展示实际使用效果 (待录制)
   - 加 badges (npm version, tests passing, license)
 - [ ] **Product Hunt 准备** (等有50+ stars再发)
 
@@ -84,9 +84,9 @@
 
 ### 社区
 
-- [ ] **GitHub Discussions 开启** — 用户反馈渠道
-- [ ] **CONTRIBUTING.md** — 贡献指南
-- [ ] **Issue templates** — bug report / feature request
+- [x] **GitHub Discussions 开启** — 用户反馈渠道 ✅
+- [x] **CONTRIBUTING.md** — 贡献指南 ✅
+- [x] **Issue templates** — bug report / feature request ✅
 
 ---
 

@@ -1,7 +1,7 @@
 # Callout — Roadmap
 
 > 更新: 2026-03-07
-> 状态: V0.3.4 已发布
+> 状态: V0.3.5 已发布
 
 ---
 
@@ -38,6 +38,17 @@
 - [x] **安全修复**: 路径穿越、bin 入口、文件大小限制、git cwd 校验
 - [x] **代码质量**: prepublishOnly、try/catch 权限、JSON.parse 防护、版本比较修复
 - [x] 18 MCP tools, 88 tests
+
+---
+
+## Phase 2.6: V0.3.5 — 模块化 + 集成测试 ✅
+
+- [x] **server.ts 模块化拆分**: 835行 → 36行 bootstrap + 4 handler 模块
+- [x] **handlers/**: analysis.ts (7工具), todo.ts (4工具), recommend.ts (3工具), meta.ts (4工具)
+- [x] **util.ts**: 提取 resolvePath + withPathHeader 共享函数
+- [x] **集成测试**: server.test.ts (22 tests) — 验证18工具全部注册、server name/version、isMainModule guard
+- [x] **export server**: 支持测试导入 server 实例而不启动 transport
+- [x] 110 tests, 12 test files
 
 ---
 

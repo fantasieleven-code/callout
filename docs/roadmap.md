@@ -43,6 +43,18 @@
 
 ---
 
+## V0.3.5 — 模块化 + 集成测试 ✅
+
+| 新功能 | 说明 |
+|--------|------|
+| server.ts 模块化 | 835行 → 36行，4个 handler 模块 |
+| 集成测试 | 22 tests 验证18工具注册完整性 |
+| export server | 测试可导入 server 实例，isMainModule guard |
+
+110 tests, 12 test files
+
+---
+
 ## V1.0 — 产品化 (下一步)
 
 - Streamable HTTP 传输 (远程审查)

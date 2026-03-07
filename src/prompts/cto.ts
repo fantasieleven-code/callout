@@ -31,5 +31,12 @@ ${ctx.readme ? `## README\n${ctx.readme}` : ''}
 
 5. **Architecture Simplification**: If you had to cut the codebase by 30%, what would you remove? What would you merge?
 
+6. **Core Dependency Documentation Audit**: Identify dependencies that determine the architecture (not utility libraries like lodash, but services/SDKs like payment APIs, real-time communication, auth providers). For each:
+   - Is the project using the full capability of the API, or only a small subset?
+   - Are there built-in features that would replace custom code? (e.g. the SDK may natively support context injection, prompt updates, or webhooks that the project re-implements manually)
+   - Is the project referencing the correct/latest API version documentation?
+   - Flag if custom workarounds exist that the SDK may already solve natively.
+   - **Key warning**: AI-generated documentation summaries miss 30-50% of API capabilities. Recommend the user paste raw official docs into AI rather than relying on URL fetches.
+
 For each finding, categorize as MUST FIX / SHOULD FIX / GOOD and estimate effort impact.`;
 }

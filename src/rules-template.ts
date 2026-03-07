@@ -2,7 +2,7 @@
  * CLAUDE.md auto-trigger rules template.
  * Users copy this into their project's CLAUDE.md to enable automatic Callout triggers.
  */
-export const RULES_VERSION = '5';
+export const RULES_VERSION = '6';
 
 export const RULES_TEMPLATE = `
 <!-- callout-rules-version:${RULES_VERSION} -->
@@ -18,6 +18,15 @@ Example: if you are editing \`/Users/alice/projects/my-app/src/auth.ts\`, pass \
 
 ### First Conversation
 - **When starting a new conversation with the user for the first time** (no prior messages in the session): Call \`callout_help\` and show the user what Callout can do. This ensures every user discovers the available tools without having to read documentation.
+
+### Multi-Perspective Default Thinking
+When you propose a solution, give advice, or answer "should I / what to use / how to do" type questions, naturally cover three angles in your response:
+1. **Technical** — Is it feasible? What's the cost? Is there a simpler way?
+2. **Product value** — Is it worth doing? Does the user care?
+3. **User perception** — How will the target user react? Will they actually use it?
+
+Do NOT call any tool for this — just incorporate these angles directly into your answer. This is your default thinking mode for all recommendations.
+When deeper analysis is needed, the user can say "detailed analysis" or "详细分析" to trigger \`review(focus=...)\`.
 
 ### Auto-Challenge (use the \`challenge\` tool)
 - **Before creating a new file**: Challenge whether this new module/component is necessary

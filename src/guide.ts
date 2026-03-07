@@ -67,6 +67,7 @@ const STAGE_CHECKLISTS: Record<ProjectStage, ChecklistItem[]> = {
     { question: 'What is your deployment plan? Can you deploy with one command?', why: 'If deployment is manual and complex, you will avoid deploying, which means you will avoid testing with real users.', perspective: 'DevOps' },
     { question: 'What data are you collecting? Do you need a privacy/compliance page?', why: 'B2B customers will ask. Enterprise customers will require it. Add it to the plan now.', perspective: 'Security' },
     { question: 'Does your architecture have any novel approaches worth protecting as IP?', why: 'Patent applications should be filed before public disclosure. Identify IP candidates early.', perspective: 'CTO' },
+    { question: 'For each core dependency (SDK/API that determines your architecture) — have you read the FULL official documentation yourself, not just AI summaries?', why: 'AI summaries of documentation miss 30-50% of API capabilities. One founder wasted 3 weeks building a custom solution because AI missed that the SDK already supported the feature natively. Paste the raw doc text into AI instead of giving it a URL.', perspective: 'CTO' },
   ],
   building: [
     { question: 'You have 0 tests. Which 3 features would break your product if they had bugs?', why: 'You do not need 100% coverage. You need tests on the 3 things that would make users leave.', perspective: 'CTO' },
@@ -76,6 +77,7 @@ const STAGE_CHECKLISTS: Record<ProjectStage, ChecklistItem[]> = {
     { question: 'How many third-party dependencies have you added? Is each one necessary?', why: 'Each dependency = security surface + maintenance burden + potential breaking changes.', perspective: 'Security' },
     { question: 'Are you handling errors and edge cases, or just the happy path?', why: 'In MVP, happy path is enough. Do not gold-plate error handling for scenarios that may never happen.', perspective: 'CTO' },
     { question: 'Is any of your AI-generated code doing something you do not understand?', why: 'Code you cannot explain is code you cannot debug. Flag it now.', perspective: 'Security' },
+    { question: 'Are you using only a fraction of your core SDK/API capabilities? Have you checked the latest version docs?', why: 'APIs evolve fast. Features you built manually may already exist natively in a newer version. AI often references outdated docs. Check the official changelog and full API reference for your actual version.', perspective: 'CTO' },
   ],
   testing: [
     { question: 'Have you personally used your product end-to-end as a real user would?', why: 'Automated tests check code works. Manual walkthrough checks the product makes sense.', perspective: 'Product' },

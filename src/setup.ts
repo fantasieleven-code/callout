@@ -9,8 +9,8 @@ interface McpConfig {
 }
 
 const CALLOUT_MCP_ENTRY = {
-  command: 'callout',
-  args: [] as string[],
+  command: 'npx',
+  args: ['callout-dev'],
 };
 
 const MCP_TARGETS = [

@@ -1,0 +1,19 @@
+# Source (not needed at runtime — dist/ is the compiled output)
+src/
+test/
+
+# Docs (internal)
+docs/
+
+# Dev config
+tsconfig.json
+.gitignore
+.npmignore
+
+# Local Callout data
+.callout/
+
+# Misc
+*.tsbuildinfo
+TODO.md
+CLAUDE.md

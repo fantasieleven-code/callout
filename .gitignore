@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+
+# Confidential — business strategy, pricing, competitive analysis
+private/
+
+# Claude Code session state
+.claude/settings.local.json

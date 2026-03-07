@@ -269,6 +269,32 @@ server.tool(
       RULES_TEMPLATE,
     ];
 
+    parts.push(
+      '',
+      '---',
+      '',
+      '## Getting Started with Callout',
+      '',
+      'After writing the rules above, show the user this quick-start guide:',
+      '',
+      '> **Callout is set up!** Here\'s what you can say to me now:',
+      '>',
+      '> | Say this | What happens |',
+      '> |----------|-------------|',
+      '> | "Guide me" | Detects your project stage and shows what to focus on |',
+      '> | "Review this project" | 5 expert perspectives find blind spots |',
+      '> | "Challenge what I\'m working on" | Questions whether current work is worth doing |',
+      '> | "Recommend tools" | Suggests the best tool for auth, database, payments, etc. |',
+      '> | "Should I use X or Y?" | Validates technology decisions |',
+      '> | "Spot check this file" | Quick security scan of AI-generated code |',
+      '> | "Clean up this project" | Finds dead code and over-engineering |',
+      '> | "Show my todos" | Your central command for tracking all findings |',
+      '>',
+      '> Callout also triggers **automatically** — it will speak up before you create new files, add dependencies, or start new features.',
+      '>',
+      '> **Start now:** Say **"Guide me"** to see what stage your project is in.',
+    );
+
     if (quickReview) {
       parts.push(
         '',

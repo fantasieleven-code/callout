@@ -2,7 +2,7 @@
  * CLAUDE.md auto-trigger rules template.
  * Users copy this into their project's CLAUDE.md to enable automatic Callout triggers.
  */
-export const RULES_VERSION = '3';
+export const RULES_VERSION = '4';
 
 export const RULES_TEMPLATE = `
 <!-- callout-rules-version:${RULES_VERSION} -->
@@ -15,6 +15,9 @@ Every Callout tool call MUST include \`project_path\` set to the absolute path o
 Derive it from the files you are reading or editing — do NOT rely on the default (process.cwd() of the MCP server is fixed at launch and will point to the wrong directory if the user did not start the CLI from the project root).
 
 Example: if you are editing \`/Users/alice/projects/my-app/src/auth.ts\`, pass \`project_path: "/Users/alice/projects/my-app"\`.
+
+### First Conversation
+- **When starting a new conversation with the user for the first time** (no prior messages in the session): Call \`callout_help\` and show the user what Callout can do. This ensures every user discovers the available tools without having to read documentation.
 
 ### Auto-Challenge (use the \`challenge\` tool)
 - **Before creating a new file**: Challenge whether this new module/component is necessary

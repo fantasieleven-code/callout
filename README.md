@@ -22,10 +22,17 @@ Callout makes that review available to every developer, automatically.
 ## 30-second setup
 
 ```bash
+cd /path/to/your/project
 npx callout-dev setup
 ```
 
-That's it. Callout auto-configures your editor and sets up smart triggers. You'll get a quick CTO review of your project immediately.
+That's it. No global install needed. Callout auto-configures your editor and sets up smart triggers.
+
+After setup, **restart your editor** (or re-enter Claude Code from the project directory), then try:
+
+```
+Review this project
+```
 
 ---
 
@@ -118,19 +125,20 @@ One server, works everywhere:
 ### Option 1: Automatic (recommended)
 
 ```bash
+cd /path/to/your/project
 npx callout-dev setup
 ```
 
-Detects your editor and configures everything automatically.
+Detects your editor and configures everything automatically. No `npm install -g` required.
 
-### Option 2: Manual (Claude Code)
+**Important:** After setup, restart your editor so it picks up the new MCP server.
 
-```bash
-npm install -g callout-dev
-claude mcp add callout -- callout
-```
+| Editor | What to do after setup |
+|--------|----------------------|
+| **Cursor / VS Code / Windsurf** | Close and reopen the project |
+| **Claude Code** | Exit and re-enter from the project directory: `cd /path/to/project && claude` |
 
-### Option 3: Manual (Cursor / VS Code)
+### Option 2: Manual (Cursor / VS Code)
 
 Add to your editor's MCP config file:
 
@@ -143,6 +151,12 @@ Add to your editor's MCP config file:
     }
   }
 }
+```
+
+### Option 3: Manual (Claude Code)
+
+```bash
+claude mcp add callout -- npx callout-dev
 ```
 
 ---

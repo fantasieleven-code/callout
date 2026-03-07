@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, rmSync, existsSync } from 'node:fs';
 import { detectScenes, buildRecommendPrompt, getSceneLabel } from '../src/prompts/recommend.js';
-import { loadDismissed, dismissScene, filterDismissed } from '../src/recommend.js';
+import { loadDismissed, dismissScene, filterDismissed, resetDismissed } from '../src/recommend.js';
 import type { ProjectContext } from '../src/types.js';
 
 const TEST_DIR = '/tmp/callout-recommend-test';
@@ -90,6 +90,16 @@ describe('recommend - dismissed tracking', () => {
     dismissScene(TEST_DIR, 'payments');
     const remaining = filterDismissed(TEST_DIR, ['auth', 'database', 'payments']);
     expect(remaining).toEqual(['database']);
+  });
+
+  it('resets all dismissed scenes and returns cleared list', () => {
+    dismissScene(TEST_DIR, 'auth');
+    dismissScene(TEST_DIR, 'payments');
+    dismissScene(TEST_DIR, 'database');
+    const cleared = resetDismissed(TEST_DIR);
+    expect(cleared).toEqual(['auth', 'payments', 'database']);
+    const data = loadDismissed(TEST_DIR);
+    expect(data.dismissed).toEqual([]);
   });
 });
 

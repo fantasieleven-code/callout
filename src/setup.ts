@@ -51,14 +51,20 @@ function writeMcpConfig(filePath: string, toolName: string): boolean {
   config.mcpServers = config.mcpServers || {};
   config.mcpServers.callout = CALLOUT_MCP_ENTRY;
 
-  const dir = dirname(filePath);
-  if (dir && !existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
-  }
+  try {
+    const dir = dirname(filePath);
+    if (dir && !existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
 
-  writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n');
-  log(`✅ ${toolName}: configured at ${filePath}`);
-  return true;
+    writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n');
+    log(`✅ ${toolName}: configured at ${filePath}`);
+    return true;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`⚠️  ${toolName}: could not write config — ${msg}`);
+    return false;
+  }
 }
 
 // All rule files that different coding tools auto-read
@@ -70,45 +76,51 @@ const RULE_FILES = [
 ];
 
 function appendRulesToFile(filePath: string, fileName: string): boolean {
-  let content = '';
+  try {
+    let content = '';
 
-  if (existsSync(filePath)) {
-    content = readFileSync(filePath, 'utf-8');
+    if (existsSync(filePath)) {
+      content = readFileSync(filePath, 'utf-8');
 
-    if (content.includes('Callout Auto-Trigger Rules')) {
-      // Check if rules need updating
-      const versionMatch = content.match(/<!-- callout-rules-version:(\d+) -->/);
-      const existingVersion = versionMatch ? versionMatch[1] : '0';
+      if (content.includes('Callout Auto-Trigger Rules')) {
+        // Check if rules need updating
+        const versionMatch = content.match(/<!-- callout-rules-version:(\d+) -->/);
+        const existingVersion = versionMatch ? versionMatch[1] : '0';
 
-      if (parseInt(existingVersion, 10) >= parseInt(RULES_VERSION, 10)) {
-        log(`⏭  ${fileName}: auto-trigger rules already up to date (v${RULES_VERSION})`);
-        return false;
+        if (parseInt(existingVersion, 10) >= parseInt(RULES_VERSION, 10)) {
+          log(`⏭  ${fileName}: auto-trigger rules already up to date (v${RULES_VERSION})`);
+          return false;
+        }
+
+        // Replace old rules with new version
+        const rulesStart = content.indexOf('<!-- callout-rules-version:');
+        const fallbackStart = rulesStart === -1 ? content.indexOf('## Callout Auto-Trigger Rules') : rulesStart;
+        if (fallbackStart !== -1) {
+          content = content.substring(0, fallbackStart).trimEnd() + '\n\n' + RULES_TEMPLATE + '\n';
+          writeFileSync(filePath, content);
+          log(`🔄 ${fileName}: auto-trigger rules updated to v${RULES_VERSION}`);
+          return true;
+        }
       }
 
-      // Replace old rules with new version
-      const rulesStart = content.indexOf('<!-- callout-rules-version:');
-      const fallbackStart = rulesStart === -1 ? content.indexOf('## Callout Auto-Trigger Rules') : rulesStart;
-      if (fallbackStart !== -1) {
-        content = content.substring(0, fallbackStart).trimEnd() + '\n\n' + RULES_TEMPLATE + '\n';
-        writeFileSync(filePath, content);
-        log(`🔄 ${fileName}: auto-trigger rules updated to v${RULES_VERSION}`);
-        return true;
-      }
+      content += '\n\n';
     }
 
-    content += '\n\n';
-  }
+    // Ensure parent directory exists
+    const dir = dirname(filePath);
+    if (dir && !existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
 
-  // Ensure parent directory exists
-  const dir = dirname(filePath);
-  if (dir && !existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
+    content += RULES_TEMPLATE + '\n';
+    writeFileSync(filePath, content);
+    log(`✅ ${fileName}: auto-trigger rules added`);
+    return true;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    log(`⚠️  ${fileName}: could not write rules — ${msg}`);
+    return false;
   }
-
-  content += RULES_TEMPLATE + '\n';
-  writeFileSync(filePath, content);
-  log(`✅ ${fileName}: auto-trigger rules added`);
-  return true;
 }
 
 function detectInstalledTools(cwd: string): string[] {

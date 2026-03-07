@@ -74,4 +74,20 @@ describe('buildReviewPrompt', () => {
     expect(result).toContain('Most important finding');
     expect(result).toContain('generate this FIRST');
   });
+
+  it('includes focus area when provided', () => {
+    const result = buildReviewPrompt(mockContext, ['cto', 'security'], undefined, 'user login page');
+    expect(result).toContain('Focused Review');
+    expect(result).toContain('user login page');
+    expect(result).toContain('focus your review specifically');
+    // Still includes full project context
+    expect(result).toContain('Express, Prisma, Vitest, TypeScript');
+    expect(result).toContain('Files**: 42');
+  });
+
+  it('uses Architecture Review title when no focus', () => {
+    const result = buildReviewPrompt(mockContext);
+    expect(result).toContain('Architecture Review: test-app');
+    expect(result).not.toContain('Focused Review');
+  });
 });

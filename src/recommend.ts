@@ -48,3 +48,10 @@ export function filterDismissed(cwd: string, scenes: Scene[]): Scene[] {
   const data = loadDismissed(cwd);
   return scenes.filter((s) => !data.dismissed.includes(s));
 }
+
+export function resetDismissed(cwd: string): string[] {
+  const data = loadDismissed(cwd);
+  const cleared = [...data.dismissed];
+  saveDismissed(cwd, { dismissed: [] });
+  return cleared;
+}

@@ -52,6 +52,30 @@ Review this project
 
 Every finding is categorized as **MUST FIX**, **SHOULD FIX**, or **GOOD** — with effort estimates. Starts with an Executive Summary so you know what to focus on in 30 seconds.
 
+<details>
+<summary>Example output (click to expand)</summary>
+
+```
+## Executive Summary
+3 MUST FIX | 5 SHOULD FIX | 8 GOOD
+Estimated total effort: 4-6 hours
+
+### CTO Perspective
+[MUST FIX] Your 4-level role system (owner/admin/manager/member) only
+needs 2 levels (owner/member). Cut it — saves 2 days of work.
+Effort: 2 hours.
+
+[SHOULD FIX] billing_history table duplicates what Stripe already tracks.
+Delete the table, query Stripe API directly. Effort: 1 hour.
+
+### Security Perspective
+[MUST FIX] JWT tokens missing orgId claim — multi-tenant data can leak
+across organizations. Add orgId to token payload and validate on every
+API endpoint. Effort: 1 hour.
+```
+
+</details>
+
 ```
 > Review this project
 > Run a security + CTO review
@@ -222,4 +246,6 @@ See [docs/architecture.md](docs/architecture.md) for technical details.
 
 ## License
 
-[AGPL-3.0-or-later](LICENSE). For commercial licensing (embedded in a product, SaaS, or closed-source tool), contact the author.
+[AGPL-3.0-or-later](LICENSE).
+
+**Commercial licensing**: If you embed Callout in a closed-source product, SaaS, or proprietary tool, you need a commercial license. Contact: **callout@callout.dev**

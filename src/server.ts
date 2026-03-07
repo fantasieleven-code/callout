@@ -19,7 +19,7 @@ import { buildTestTranslatePrompt } from './prompts/test-translate.js';
 import { buildCleanupPrompt } from './prompts/cleanup.js';
 import { buildValidatePrompt } from './prompts/validate.js';
 import { detectScenes, buildRecommendPrompt } from './prompts/recommend.js';
-import { filterDismissed, dismissScene } from './recommend.js';
+import { filterDismissed, dismissScene, loadDismissed, resetDismissed } from './recommend.js';
 import type { Scene } from './prompts/recommend.js';
 import type { Perspective } from './types.js';
 import type { Priority, TodoStatus } from './todo.js';
@@ -42,12 +42,16 @@ function withPathHeader(prompt: string, cwd: string): string {
 
 server.tool(
   'review',
-  'Multi-perspective architecture review. Analyzes project structure, dependencies, and code to produce actionable findings from expert viewpoints (CTO, Security, Product, DevOps, Customer).',
+  'Multi-perspective architecture review. Analyzes full project context and produces actionable findings from expert viewpoints. Use focus parameter to zoom in on a specific feature, page, or decision while keeping full project context.',
   {
     perspectives: z
       .array(z.enum(['cto', 'security', 'product', 'devops', 'customer']))
       .optional()
       .describe('Which perspectives to include. Defaults to all five.'),
+    focus: z
+      .string()
+      .optional()
+      .describe('Specific feature, page, module, or decision to focus the review on. E.g. "user login page", "payment integration", "the API rate limiting approach". The full project is still scanned for context, but findings focus on this area.'),
     customer_role: z
       .string()
       .optional()
@@ -57,7 +61,7 @@ server.tool(
       .optional()
       .describe('Path to the project to review. Defaults to current working directory.'),
   },
-  async ({ perspectives, customer_role, project_path }) => {
+  async ({ perspectives, focus, customer_role, project_path }) => {
     const cwd = resolvePath(project_path);
 
     try {
@@ -67,6 +71,7 @@ server.tool(
         context,
         selectedPerspectives,
         customer_role,
+        focus,
       );
 
       // Load previous review history for comparison
@@ -209,6 +214,8 @@ Validates technology decisions in context. Gives a direct verdict with reasoning
 Detects what your project needs (auth, database, payments, deployment, etc.) and recommends the best tool for each scenario. Considers your existing dependencies and current task. Same scenario is only recommended once.
 
 **Try:** "Recommend tools" / "What should I use for auth?" / "I need to add payments"
+
+If a recommendation was dismissed by mistake, say "Reset recommendations" to re-enable all scenarios.
 
 ### save_review_findings — Save review results
 After a review, saves findings summary to history for progress tracking across reviews.
@@ -742,6 +749,39 @@ server.tool(
       content: [{
         type: 'text' as const,
         text: `Dismissed "${scene}" — this scenario won't be recommended again for this project.`,
+      }],
+    };
+  },
+);
+
+server.tool(
+  'recommend_reset',
+  'Reset all dismissed recommendation scenarios. After reset, recommend will detect and suggest tools again for all scenarios. Also shows what was previously dismissed.',
+  {
+    project_path: z
+      .string()
+      .optional()
+      .describe('Path to the project. Defaults to current working directory.'),
+  },
+  async ({ project_path }) => {
+    const cwd = resolvePath(project_path);
+    const dismissed = loadDismissed(cwd);
+
+    if (dismissed.dismissed.length === 0) {
+      return {
+        content: [{
+          type: 'text' as const,
+          text: 'No dismissed scenarios to reset.',
+        }],
+      };
+    }
+
+    const cleared = resetDismissed(cwd);
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: `Reset ${cleared.length} dismissed scenario(s): ${cleared.join(', ')}. Running \`recommend\` will now detect these again.`,
       }],
     };
   },

@@ -1,6 +1,13 @@
 import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { isAbsolute } from 'node:path';
+
+function validateCwd(cwd: string): boolean {
+  return isAbsolute(cwd) && existsSync(cwd);
+}
 
 function runGit(cmd: string, cwd: string, maxBytes = 8000): string {
+  if (!validateCwd(cwd)) return '';
   try {
     const output = execSync(cmd, {
       cwd,
@@ -17,6 +24,7 @@ function runGit(cmd: string, cwd: string, maxBytes = 8000): string {
 }
 
 export function isGitRepo(cwd: string): boolean {
+  if (!validateCwd(cwd)) return false;
   try {
     execSync('git rev-parse --is-inside-work-tree', {
       cwd,

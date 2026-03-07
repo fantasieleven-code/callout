@@ -26,6 +26,7 @@ export function buildReviewPrompt(
   context: ProjectContext,
   perspectives?: Perspective[],
   customerRole?: string,
+  focus?: string,
 ): string {
   const selected = perspectives && perspectives.length > 0
     ? perspectives
@@ -38,11 +39,24 @@ export function buildReviewPrompt(
     return `\n## ${label} Review\n\n${prompt}`;
   });
 
+  const focusBlock = focus
+    ? [
+        '',
+        `**Review Focus**: ${focus}`,
+        '',
+        '> IMPORTANT: You have full project context above, but focus your review specifically on the area described.',
+        '> All findings should be evaluated in the context of the full project (tech stack, architecture, dependencies),',
+        '> but only flag issues and give recommendations relevant to this focus area.',
+        '> Do NOT review unrelated parts of the project.',
+      ].join('\n')
+    : '';
+
   const header = [
-    `# Architecture Review: ${context.name}`,
+    `# ${focus ? 'Focused Review' : 'Architecture Review'}: ${context.name}`,
     '',
     `**Tech Stack**: ${context.techStack.join(', ') || 'Not detected'}`,
     `**Files**: ${context.stats.totalFiles} | **Tests**: ${context.stats.testFiles} | **Code Lines**: ~${context.stats.codeLines}`,
+    focusBlock,
     '',
     '---',
     '',

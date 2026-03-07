@@ -9,6 +9,8 @@
 
 AI coding tools make you 10x faster at writing code. Nobody checks if you're building the *right* thing. Callout is the second pair of eyes — 5 expert perspectives that catch what you miss, delivered as an MCP server that works inside Claude Code, Cursor, VS Code, and Windsurf.
 
+![Callout review demo](docs/demo-review.gif)
+
 ---
 
 ## Why Callout exists

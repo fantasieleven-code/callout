@@ -18,13 +18,14 @@ const mockContext: ProjectContext = {
 };
 
 describe('buildReviewPrompt', () => {
-  it('includes all 5 perspectives by default', () => {
+  it('includes all 6 perspectives by default', () => {
     const result = buildReviewPrompt(mockContext);
     expect(result).toContain('CTO / Technical Leadership Review');
     expect(result).toContain('Security Expert Review');
     expect(result).toContain('Product / Business Expert Review');
     expect(result).toContain('DevOps / Infrastructure Expert Review');
     expect(result).toContain('Target Customer Review');
+    expect(result).toContain('Strategy / Business Leadership Review');
   });
 
   it('filters to selected perspectives', () => {
@@ -34,6 +35,7 @@ describe('buildReviewPrompt', () => {
     expect(result).not.toContain('Product / Business Expert Review');
     expect(result).not.toContain('DevOps / Infrastructure Expert Review');
     expect(result).not.toContain('Target Customer Review');
+    expect(result).not.toContain('Strategy / Business Leadership Review');
   });
 
   it('includes project metadata in header', () => {

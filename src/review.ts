@@ -5,6 +5,7 @@ import { securityBuildPrompt } from './prompts/security.js';
 import { productBuildPrompt } from './prompts/product.js';
 import { devopsBuildPrompt } from './prompts/devops.js';
 import { customerBuildPrompt } from './prompts/customer.js';
+import { strategyBuildPrompt } from './prompts/strategy.js';
 
 const PROMPT_BUILDERS: Record<Perspective, (ctx: ProjectContext, customerRole?: string) => string> = {
   cto: ctoBuildPrompt,
@@ -12,6 +13,7 @@ const PROMPT_BUILDERS: Record<Perspective, (ctx: ProjectContext, customerRole?: 
   product: productBuildPrompt,
   devops: devopsBuildPrompt,
   customer: customerBuildPrompt,
+  strategy: strategyBuildPrompt,
 };
 
 const PERSPECTIVE_LABELS: Record<Perspective, string> = {
@@ -20,6 +22,7 @@ const PERSPECTIVE_LABELS: Record<Perspective, string> = {
   product: 'Product / Business Expert',
   devops: 'DevOps / Infrastructure Expert',
   customer: 'Target Customer',
+  strategy: 'Strategy / Business Leadership',
 };
 
 export function buildReviewPrompt(

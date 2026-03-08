@@ -31,6 +31,6 @@ export interface ProjectContext {
   };
 }
 
-export type Perspective = 'cto' | 'security' | 'product' | 'devops' | 'customer';
+export type Perspective = 'cto' | 'security' | 'product' | 'devops' | 'customer' | 'strategy';
 
-export const ALL_PERSPECTIVES: Perspective[] = ['cto', 'security', 'product', 'devops', 'customer'];
+export const ALL_PERSPECTIVES: Perspective[] = ['cto', 'security', 'product', 'devops', 'customer', 'strategy'];

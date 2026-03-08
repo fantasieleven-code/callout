@@ -22,9 +22,9 @@ export function registerAnalysisTools(server: McpServer): void {
     'Multi-perspective architecture review. Analyzes full project context and produces actionable findings from expert viewpoints. Use focus parameter to zoom in on a specific feature, page, or decision while keeping full project context.',
     {
       perspectives: z
-        .array(z.enum(['cto', 'security', 'product', 'devops', 'customer']))
+        .array(z.enum(['cto', 'security', 'product', 'devops', 'customer', 'strategy']))
         .optional()
-        .describe('Which perspectives to include. Defaults to all five.'),
+        .describe('Which perspectives to include. Defaults to all six.'),
       focus: z
         .string()
         .optional()
@@ -43,7 +43,7 @@ export function registerAnalysisTools(server: McpServer): void {
 
       try {
         const context = await collectContext(cwd);
-        const selectedPerspectives = (perspectives as Perspective[] | undefined) || ['cto', 'security', 'product', 'devops', 'customer'];
+        const selectedPerspectives = (perspectives as Perspective[] | undefined) || ['cto', 'security', 'product', 'devops', 'customer', 'strategy'];
 
         let resolvedCustomerRole = customer_role;
         if (!resolvedCustomerRole && selectedPerspectives.includes('customer')) {

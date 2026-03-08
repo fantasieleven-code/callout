@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![npm downloads](https://img.shields.io/npm/dm/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Tests](https://img.shields.io/badge/tests-110%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
+[![Tests](https://img.shields.io/badge/tests-124%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
 
 **You used AI to write code for 3 days. Callout tells you 60% of it was over-engineered.**
 
@@ -219,6 +219,7 @@ claude mcp add callout -- npx callout-dev
 | `recommend_dismiss` | Dismiss a recommendation scenario so it won't be suggested again |
 | `recommend_reset` | Reset all dismissed recommendations to re-enable detection |
 | `set_target_user` | Set who the target user is for customer perspective reviews |
+| `portfolio` | Multi-project overview with health status and resource allocation advice |
 | `callout_help` | Show usage guide |
 
 ---
@@ -227,7 +228,7 @@ claude mcp add callout -- npx callout-dev
 
 See [docs/roadmap.md](docs/roadmap.md) for the full plan.
 
-**V0.3** (current): 18 MCP tools, 110 tests, cross-editor support, tool recommendations, modular architecture, npm published
+**V0.4** (current): 19 MCP tools, 124 tests, portfolio overview, MCP instructions auto-trigger, modular architecture, npm published
 **V1.0** (next): Web UI dashboard, cloud sync, custom perspectives, paid tier
 
 ---

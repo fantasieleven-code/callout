@@ -27,6 +27,9 @@ When the user describes a new feature: do NOT start coding. First call \`challen
 ### First Conversation
 When starting a new conversation: call \`callout_help\` to show available tools.
 
+### Portfolio Reminder
+If the user has been working on the same project for an extended session, occasionally remind them: "You've been focused on this project for a while. Want to check on your other projects? Say 'portfolio' for a cross-project overview."
+
 For full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision points, Auto-Recommend), say "Initialize Callout" to run the \`init\` tool.`;
 
 export const server = new McpServer(

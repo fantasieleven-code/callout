@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { collectContext } from '../context.js';
@@ -5,6 +6,7 @@ import { buildReviewPrompt } from '../review.js';
 import { RULES_TEMPLATE } from '../rules-template.js';
 import { loadHistory, saveHistory } from '../history.js';
 import { saveConfig } from '../config.js';
+import { scanProjects, buildPortfolioPrompt } from '../portfolio.js';
 import { resolvePath } from '../util.js';
 
 export function registerMetaTools(server: McpServer): void {
@@ -81,8 +83,13 @@ If recommendations were dismissed by mistake, reset them so recommend detects th
 
 **Try:** "Reset recommendations"
 
+### portfolio — "What should I work on across all my projects?"
+Scans all your projects in a directory, shows health status (todos, risks, review history), and gives resource allocation advice from a founder perspective.
+
+**Try:** "Show my portfolio" / "Which project should I focus on?" / "Portfolio overview"
+
 ### init — One-time setup
-Sets up auto-triggers so Callout speaks up automatically during development.
+Sets up full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision points, Auto-Recommend). Core rules are already active without init.
 
 **Try:** "Initialize Callout in this project"
 
@@ -238,6 +245,29 @@ Sets up auto-triggers so Callout speaks up automatically during development.
         content: [{
           type: 'text' as const,
           text: `Target user set to: "${target_user}". All future reviews with customer perspective will evaluate the product as this user.`,
+        }],
+      };
+    },
+  );
+
+  server.tool(
+    'portfolio',
+    'Multi-project overview for founders managing multiple projects. Scans a directory for all projects, shows health status (todos, review history, risks), and asks AI to give resource allocation advice from a founder perspective.',
+    {
+      projects_root: z
+        .string()
+        .optional()
+        .describe('Root directory containing project folders. Defaults to ~/Desktop. E.g. "/Users/alice/projects"'),
+    },
+    async ({ projects_root }) => {
+      const root = projects_root || join(process.env.HOME || process.env.USERPROFILE || '', 'Desktop');
+      const projects = scanProjects(root);
+      const prompt = buildPortfolioPrompt(projects);
+
+      return {
+        content: [{
+          type: 'text' as const,
+          text: `> Scanning: \`${root}\`\n\n${prompt}`,
         }],
       };
     },

@@ -26,16 +26,17 @@ const EXPECTED_TOOLS = [
   'recommend',
   'recommend_dismiss',
   'recommend_reset',
-  // Meta tools (4)
+  // Meta tools (5)
   'init',
   'callout_help',
   'save_review_findings',
   'set_target_user',
+  'portfolio',
 ];
 
 describe('MCP Server integration', () => {
-  it('should have exactly 18 tools registered', () => {
-    expect(Object.keys(registeredTools).length).toBe(18);
+  it('should have exactly 19 tools registered', () => {
+    expect(Object.keys(registeredTools).length).toBe(19);
   });
 
   it.each(EXPECTED_TOOLS)('should have tool: %s', (toolName) => {
@@ -57,6 +58,7 @@ describe('MCP Server integration', () => {
     expect(instructions).toContain('Multi-Perspective');
     expect(instructions).toContain('Auto-Plan');
     expect(instructions).toContain('callout_help');
+    expect(instructions).toContain('portfolio');
   });
 
   it('should not start transport when imported (isMainModule guard)', () => {

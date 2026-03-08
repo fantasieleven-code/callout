@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/callout-dev)](https://www.npmjs.com/package/callout-dev)
 [![npm downloads](https://img.shields.io/npm/dm/callout-dev)](https://www.npmjs.com/package/callout-dev)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-124%20passing-brightgreen)](https://github.com/fantasieleven-code/callout)
 
 **You used AI to write code for 3 days. Callout tells you 60% of it was over-engineered.**
@@ -249,8 +249,4 @@ See [docs/architecture.md](docs/architecture.md) for technical details.
 
 ## License
 
-[AGPL-3.0-or-later](LICENSE).
-
-**Using Callout as a development tool** (its primary use case — running it locally via `npx` or MCP) **is free** and does not trigger AGPL obligations. The AGPL only applies if you redistribute or embed Callout's source code in your own product.
-
-**Commercial licensing**: If you embed Callout in a closed-source product, SaaS, or proprietary tool, you need a commercial license. Contact: **callout@callout.dev**
+[MIT](LICENSE)

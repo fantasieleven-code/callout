@@ -4,7 +4,7 @@ import { collectContext } from '../context.js';
 import { detectScenes, buildRecommendPrompt } from '../prompts/recommend.js';
 import { filterDismissed, dismissScene, loadDismissed, resetDismissed } from '../recommend.js';
 import { resolvePath, withPathHeader } from '../util.js';
-import type { Scene } from '../prompts/recommend.js';
+import { VALID_SCENES, type Scene } from '../prompts/recommend.js';
 
 export function registerRecommendTools(server: McpServer): void {
   server.tool(
@@ -64,7 +64,7 @@ export function registerRecommendTools(server: McpServer): void {
     'Dismiss a recommendation scenario so it won\'t be suggested again. Use when the user says they don\'t need a recommendation for a particular area.',
     {
       scene: z
-        .string()
+        .enum(VALID_SCENES)
         .describe('The scenario to dismiss. E.g. "auth", "database", "payments".'),
       project_path: z
         .string()
@@ -73,7 +73,7 @@ export function registerRecommendTools(server: McpServer): void {
     },
     async ({ scene, project_path }) => {
       const cwd = resolvePath(project_path);
-      dismissScene(cwd, scene as Scene);
+      dismissScene(cwd, scene);
 
       return {
         content: [{

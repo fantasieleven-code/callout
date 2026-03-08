@@ -1,20 +1,23 @@
 import type { ProjectContext } from '../types.js';
 
-export type Scene =
-  | 'auth'
-  | 'database'
-  | 'payments'
-  | 'email'
-  | 'file-upload'
-  | 'search'
-  | 'analytics'
-  | 'monitoring'
-  | 'ci-cd'
-  | 'deployment'
-  | 'testing'
-  | 'styling'
-  | 'state-management'
-  | 'api';
+export const VALID_SCENES = [
+  'auth',
+  'database',
+  'payments',
+  'email',
+  'file-upload',
+  'search',
+  'analytics',
+  'monitoring',
+  'ci-cd',
+  'deployment',
+  'testing',
+  'styling',
+  'state-management',
+  'api',
+] as const;
+
+export type Scene = typeof VALID_SCENES[number];
 
 interface SceneRule {
   scene: Scene;

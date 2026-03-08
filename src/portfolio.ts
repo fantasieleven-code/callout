@@ -104,8 +104,14 @@ export function scanProjects(rootPath: string): ProjectSummary[] {
     return projects;
   }
 
+  // Skip sensitive/system directories
+  const SKIP_DIRS = new Set([
+    'node_modules', 'Library', 'Applications', 'System',
+    'bin', 'sbin', 'usr', 'var', 'etc', 'tmp', 'private',
+  ]);
+
   for (const entry of entries) {
-    if (entry.startsWith('.')) continue;
+    if (entry.startsWith('.') || SKIP_DIRS.has(entry)) continue;
     const fullPath = join(rootPath, entry);
 
     try {

@@ -112,20 +112,10 @@ docs/
 
 ## Git Push Safety Rules
 
-### 机密文件保护
-- `private/` 目录包含商业机密（定价/竞品/方法论/GTM内容），已在 `.gitignore` 中，**永远不能推送**
-- `.claude/settings.local.json` 包含会话状态，已在 `.gitignore` 中，**永远不能推送**
-- `.mcp.json` 是本地 MCP 配置，不应推送
-
-### 推送前检查
-- 推送前**必须**运行 `git status` 确认没有机密文件被意外跟踪
-- 如果看到 `private/` 下任何文件出现在 git status 中，**立即停止**并提醒用户
-- CLAUDE.md、TODO.md、docs/roadmap.md 是公开文件，但**不能**包含：定价数字、收入预测、转化率、竞品弱点分析、GTM时间线
+- `.gitignore` 中列出的目录和文件**永远不能推送**
+- 推送前**必须**运行 `git status` 确认没有意外跟踪的文件
 - **永远不要** `git add -A` 或 `git add .` — 逐个添加文件
-
-### 已清理的历史
-- 2026-03-07 已用 force push 清除了包含机密内容的 git 历史
-- 当前 GitHub 上只有一个干净 commit，不包含任何商业敏感信息
+- 公开文件（CLAUDE.md、TODO.md、docs/）不能包含商业敏感信息
 
 ## Callout Auto-Trigger Rules
 

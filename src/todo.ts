@@ -174,7 +174,7 @@ export function formatTodoSummary(cwd: string): string {
   const todos = loadTodos(cwd);
 
   if (todos.items.length === 0) {
-    return 'No todos yet. Run `guide` or `review` to discover items, or use `todo_add` to add your own.';
+    return 'No todos yet. Run `review` or `coach` to discover items, or use `todo_add` to add your own.';
   }
 
   const open = todos.items.filter(t => t.status === 'open');

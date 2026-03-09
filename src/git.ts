@@ -48,3 +48,11 @@ export function getGitDiff(cwd: string): string {
 export function getRecentFiles(cwd: string): string {
   return runGit('git log --oneline -10 --name-only', cwd);
 }
+
+export function getCommitStats(cwd: string): string {
+  return runGit('git log --oneline -50 --name-only', cwd, 30000);
+}
+
+export function getCommitMessages(cwd: string): string {
+  return runGit('git log --oneline -20', cwd);
+}

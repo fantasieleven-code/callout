@@ -7,7 +7,7 @@ import type { Priority, TodoStatus } from '../todo.js';
 export function registerTodoTools(server: McpServer): void {
   server.tool(
     'todo_add',
-    'Add an item to the project todo list. All findings from review, challenge, and guide should be added here.',
+    'Add an item to the project todo list. All findings from review and coach should be added here.',
     {
       title: z.string().describe('Short title of the todo item'),
       description: z.string().optional().describe('Detailed description'),

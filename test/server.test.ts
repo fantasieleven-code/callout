@@ -9,14 +9,10 @@ const registeredTools = (server as unknown as { _registeredTools: Record<string,
 const innerServer = (server as unknown as { server: { _serverInfo: { name: string; version: string } } }).server;
 
 const EXPECTED_TOOLS = [
-  // Analysis tools (7)
+  // Analysis tools (3)
   'review',
-  'challenge',
-  'guide',
-  'spot_check',
   'test_translate',
-  'cleanup',
-  'validate',
+  'coach',
   // Todo tools (4)
   'todo_add',
   'todo_update',
@@ -35,8 +31,8 @@ const EXPECTED_TOOLS = [
 ];
 
 describe('MCP Server integration', () => {
-  it('should have exactly 19 tools registered', () => {
-    expect(Object.keys(registeredTools).length).toBe(19);
+  it('should have exactly 15 tools registered', () => {
+    expect(Object.keys(registeredTools).length).toBe(15);
   });
 
   it.each(EXPECTED_TOOLS)('should have tool: %s', (toolName) => {

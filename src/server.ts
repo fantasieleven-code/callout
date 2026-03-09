@@ -22,15 +22,18 @@ Every Callout tool call MUST include \`project_path\` set to the absolute path o
 When you propose a solution or answer "should I / what to use / how to do" questions, naturally cover three angles: (1) Technical — feasible? simpler way? (2) Product value — worth doing? (3) User perception — how will the target user react? Do NOT call any tool for this.
 
 ### Auto-Plan (discuss before coding)
-When the user describes a new feature: do NOT start coding. First call \`challenge\` and \`review\` with \`focus\` set to the feature. Discuss with user. Only code after explicit approval.
+When the user describes a new feature: do NOT start coding. First call \`review\` with \`focus\` set to the feature description. Discuss with user. Only code after explicit approval.
 
 ### First Conversation
 When starting a new conversation: call \`callout_help\` to show available tools.
 
+### Auto-Coach
+When opening a new/empty project for the first time: call \`coach\` to analyze the project setup and reveal collaboration blind spots.
+
 ### Portfolio Reminder
 If the user has been working on the same project for an extended session, occasionally remind them: "You've been focused on this project for a while. Want to check on your other projects? Say 'portfolio' for a cross-project overview."
 
-For full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision points, Auto-Recommend), say "Initialize Callout" to run the \`init\` tool.`;
+For full auto-trigger rules (Auto-Review at 5 decision points, Auto-Coach, Auto-Recommend), say "Initialize Callout" to run the \`init\` tool.`;
 
 export const server = new McpServer(
   { name: 'callout', version: pkg.version },

@@ -2,7 +2,7 @@
  * CLAUDE.md auto-trigger rules template.
  * Users copy this into their project's CLAUDE.md to enable automatic Callout triggers.
  */
-export const RULES_VERSION = '6';
+export const RULES_VERSION = '7';
 
 export const RULES_TEMPLATE = `
 <!-- callout-rules-version:${RULES_VERSION} -->
@@ -28,17 +28,6 @@ When you propose a solution, give advice, or answer "should I / what to use / ho
 Do NOT call any tool for this — just incorporate these angles directly into your answer. This is your default thinking mode for all recommendations.
 When deeper analysis is needed, the user can say "detailed analysis" or "详细分析" to trigger \`review(focus=...)\`.
 
-### Auto-Challenge (use the \`challenge\` tool)
-- **Before creating a new file**: Challenge whether this new module/component is necessary
-- **When modifying the same file for the 3rd+ time in a session**: Challenge whether you are chasing a bug in a low-value feature
-- **Before adding a new dependency**: Challenge whether a simpler alternative exists
-- **When a bug fix exceeds 30 minutes**: Challenge whether the buggy feature should be simplified or removed
-
-### Auto-Plan (discuss before coding)
-- **When the user describes a new feature or requirement**: Do NOT start writing code immediately. First call \`challenge\` (is this worth building?) and \`review\` with \`focus\` set to the feature description (what do experts think?). Discuss architecture, scope, and trade-offs with the user. Only start implementation after the user explicitly says "go ahead", "start coding", "implement it", or similar confirmation.
-- **When opening a new/empty project for the first time**: Call \`guide\` to discuss project planning — stage, priorities, and what to build first. Do not generate boilerplate or scaffold code until the user confirms the plan.
-- **When the user asks to add a major dependency or service** (database, auth, payments, etc.): Call \`validate\` to discuss alternatives before installing or integrating anything.
-
 ### Auto-Review (use the \`review\` tool with \`focus\` parameter)
 
 The \`review\` tool has a \`focus\` parameter — use it to zoom into a specific feature/page/decision while keeping full project context. This makes reviews fast and targeted. Trigger at these 5 decision points:
@@ -47,16 +36,28 @@ The \`review\` tool has a \`focus\` parameter — use it to zoom into a specific
 2. **Stuck/pivot** — When the user changes approach, expresses doubt, or has been stuck for a while: \`review(focus="the problematic area", perspectives=["cto", "customer"])\`. Surfaces whether the approach is wrong or the feature isn't worth it.
 3. **Feature complete** — When the user finishes a feature or module: \`review(focus="what was just built")\` with all perspectives. This is the most thorough check.
 4. **Pre-ship** — Before creating a PR or deploying: \`review(focus="changes in this PR", perspectives=["security", "devops", "customer"])\`. Last line of defense.
-5. **Direction check** — When the user asks "what should I do next?" or seems unsure about priorities: \`review(perspectives=["product", "customer"])\` without focus to re-evaluate the whole project direction.
+5. **Direction check** — When the user asks "what should I do next?" or seems unsure about priorities: \`review(perspectives=["product", "customer", "strategy"])\` without focus to re-evaluate the whole project direction.
 
-**Customer perspective is included in ALL 5 trigger points.** The review tool auto-detects who the target user is from the project's README/CLAUDE.md. If not detected, use \`set_target_user\` to set it once — all future reviews will use it. When auto-triggering, pick the 2-3 most relevant additional perspectives beyond customer.
+**Customer perspective is included in ALL 5 trigger points.** The review tool auto-detects who the target user is from the project's README/CLAUDE.md. If not detected, use \`set_target_user\` to set it once — all future reviews will use it.
+
+### Auto-Challenge (via review focus)
+- **Before creating a new file**: \`review(focus="is this new file/module necessary?", perspectives=["cto", "product"])\`
+- **When modifying the same file for the 3rd+ time in a session**: \`review(focus="[file] has been modified 3+ times, is this the right approach?", perspectives=["cto"])\`
+- **Before adding a new dependency**: \`review(focus="is [dependency] necessary or is there a simpler alternative?", perspectives=["cto"])\`
+- **When a bug fix exceeds 30 minutes**: \`review(focus="this bug fix is taking too long, should we simplify or remove this feature?", perspectives=["cto", "product"])\`
+
+### Auto-Coach (use the \`coach\` tool)
+- **When opening a new/empty project for the first time**: Call \`coach\` to analyze the project setup and reveal AI collaboration blind spots
+- **After completing a major feature or milestone**: Call \`coach\` to check if development habits are degrading
+- **When the user seems stuck or frustrated**: Call \`coach\` — the issue might be collaboration habits, not code
+
+### Auto-Plan (discuss before coding)
+- **When the user describes a new feature or requirement**: Do NOT start writing code immediately. First call \`review\` with \`focus\` set to the feature description (what do experts think?). Discuss architecture, scope, and trade-offs with the user. Only start implementation after the user explicitly says "go ahead", "start coding", "implement it", or similar confirmation.
+- **When the user asks to add a major dependency or service** (database, auth, payments, etc.): Call \`review(focus="should we use [service]?", perspectives=["cto", "strategy"])\` to discuss alternatives before installing or integrating anything.
 
 ### Rules
 - **Plan before code**: When Auto-Plan triggers, stay in discussion mode. Present findings, ask questions, and wait for the user to decide. Do not write files, install packages, or generate code until the user explicitly approves the approach.
 - **Discussion ≠ inaction**: During Auto-Plan, actively use Callout tools to provide structured analysis. The goal is informed decision-making, not delays.
-- When challenge returns DELETE or PAUSE: Stop current work, present the finding to the user, and wait for their decision before continuing
-- When challenge returns SIMPLIFY: Present the simpler approach and ask the user which path to take
-- When challenge returns CONTINUE: Proceed without interruption
 - Do NOT suppress or summarize Callout's findings — show them in full
 
 ### Auto-Recommend (use the \`recommend\` tool)

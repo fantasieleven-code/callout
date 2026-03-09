@@ -20,82 +20,52 @@ export function registerMetaTools(server: McpServer): void {
           type: 'text' as const,
           text: `# Callout — Your AI Co-founder for 0→1 Builds
 
-## Tools Available
+## Core Tools
 
-### guide — "What should I be thinking about right now?"
-Detects your project stage (research → architecture → building → testing → launch) and shows the questions you should be asking but aren't.
+### review — "Get expert opinions on my project"
+6 perspectives: CTO, Security, Product, DevOps, Customer, Strategy. Finds what you didn't know to look for. Use \`focus\` to zoom into a specific feature, decision, or question.
 
-**Try:** "Guide me" / "What should I focus on?"
+**Try:**
+- "Review this project" — full 6-perspective review
+- "Review focus: should I use Supabase or Firebase?" — technology decision
+- "Review focus: user login page" — focused feature review
+- "Review focus: what can I delete?" — cleanup review
+- "Review focus: is this feature worth building?" — challenge current work
+- "Review security + CTO only" — selected perspectives
 
-### review — "Get 5 expert opinions on my project"
-CTO, Security, Product, DevOps, and Customer perspectives. Finds what you didn't know to look for — from over-engineering to patent opportunities.
+### coach — "Am I working with AI the right way?"
+Analyzes your project setup, development habits, and knowledge blind spots. Reveals what you don't know you're doing wrong when working with AI coding tools.
 
-**Try:** "Review this project" / "Run a security + CTO review"
-
-### challenge — "Is what I'm doing right now worth it?"
-When you're stuck on a bug or feature, this asks the hard question: should you keep going, simplify, or delete it?
-
-**Try:** "Challenge what I'm working on" / "This bug is taking forever, should I keep going?"
-
-### spot_check — "Quick security scan of this code"
-Flags dangerous issues in AI-generated code: vulnerabilities, logic errors, unsafe operations.
-
-**Try:** "Spot check this file" / "Scan auth.ts for security issues"
+**Try:** "Coach me" / "How am I doing with AI?" / "Check my collaboration habits"
 
 ### test_translate — "What do my tests actually cover?"
 Translates test results into plain language. Shows what's tested, what failed, and produces a manual test script.
 
 **Try:** "Translate my test results" / "What do these tests mean?"
 
-### cleanup — "What can I delete or simplify?"
-Finds dead code, duplicate logic, unused dependencies, and over-engineering. Returns specific delete/merge/simplify actions.
-
-**Try:** "Clean up this project" / "Find dead code"
-
-### validate — "Should I use X or Y?"
-Validates technology decisions in context. Gives a direct verdict with reasoning and confidence level.
-
-**Try:** "Should I use Supabase or Planetscale?" / "Is Redis worth adding now?"
+## Supporting Tools
 
 ### recommend — "What tools should I use for this?"
-Detects what your project needs (auth, database, payments, deployment, etc.) and recommends the best tool for each scenario. Considers your existing dependencies and current task. Same scenario is only recommended once.
+Detects what your project needs (auth, database, payments, etc.) and recommends the best tool.
 
-**Try:** "Recommend tools" / "What should I use for auth?" / "I need to add payments"
-
-If a recommendation was dismissed by mistake, say "Reset recommendations" to re-enable all scenarios.
-
-### save_review_findings — Save review results
-After a review, saves findings summary to history for progress tracking across reviews.
+**Try:** "What should I use for auth?" / "I need to add payments"
 
 ### Todo List — Your central command
-All findings from guide, review, and challenge flow into your todo list. Track what's found, what's fixed, what's pending.
+All findings from review and coach flow into your todo list.
 Tools: todo_add, todo_update, todo_list, todo_summary
 
-**Try:** "Show my todos" / "What's my top priority?" / "Mark todo #3 as done"
-
-### set_target_user — Set who your target user is
-Tell Callout who uses your product (e.g. "enterprise HR managers"). All future reviews with customer perspective will evaluate from their point of view. Auto-detected from README if not set.
-
-**Try:** "Set target user to startup CTOs" / "My users are non-technical founders"
-
-### recommend_reset — Re-enable dismissed recommendations
-If recommendations were dismissed by mistake, reset them so recommend detects those scenarios again.
-
-**Try:** "Reset recommendations"
+**Try:** "Show my todos" / "What's my top priority?"
 
 ### portfolio — "What should I work on across all my projects?"
-Scans all your projects in a directory, shows health status (todos, risks, review history), and gives resource allocation advice from a founder perspective.
+Scans all your projects, shows health status, and gives resource allocation advice.
 
-**Try:** "Show my portfolio" / "Which project should I focus on?" / "Portfolio overview"
+**Try:** "Show my portfolio"
 
-### init — One-time setup
-Sets up full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision points, Auto-Recommend). Core rules are already active without init.
-
-**Try:** "Initialize Callout in this project"
+### Other: set_target_user, save_review_findings, recommend_dismiss, recommend_reset, init
 
 ---
 
-**Start here:** Say "Guide me" to see what stage your project is in and what to focus on.`,
+**Start here:** Say "Coach me" to check your AI collaboration setup, or "Review this project" for a full expert review.`,
         }],
       };
     },
@@ -103,7 +73,7 @@ Sets up full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision point
 
   server.tool(
     'init',
-    'Initialize Callout in a project. Returns CLAUDE.md rules that enable automatic challenge/review triggers. The host should append these rules to the project\'s CLAUDE.md file.',
+    'Initialize Callout in a project. Returns CLAUDE.md rules that enable automatic review/coach/recommend triggers. The host should append these rules to the project\'s CLAUDE.md file.',
     {
       project_path: z
         .string()
@@ -149,18 +119,15 @@ Sets up full auto-trigger rules (Auto-Challenge, Auto-Review at 5 decision point
         '>',
         '> | Say this | What happens |',
         '> |----------|-------------|',
-        '> | "Guide me" | Detects your project stage and shows what to focus on |',
-        '> | "Review this project" | 5 expert perspectives find blind spots |',
-        '> | "Challenge what I\'m working on" | Questions whether current work is worth doing |',
+        '> | "Coach me" | Reveals AI collaboration blind spots and habits to fix |',
+        '> | "Review this project" | 6 expert perspectives find blind spots |',
+        '> | "Review focus: should I use X?" | Focused review on a specific decision |',
         '> | "Recommend tools" | Suggests the best tool for auth, database, payments, etc. |',
-        '> | "Should I use X or Y?" | Validates technology decisions |',
-        '> | "Spot check this file" | Quick security scan of AI-generated code |',
-        '> | "Clean up this project" | Finds dead code and over-engineering |',
         '> | "Show my todos" | Your central command for tracking all findings |',
         '>',
         '> Callout also triggers **automatically** — it will speak up before you create new files, add dependencies, or start new features.',
         '>',
-        '> **Start now:** Say **"Guide me"** to see what stage your project is in.',
+        '> **Start now:** Say **"Coach me"** to check your AI collaboration setup.',
       );
 
       if (quickReview) {

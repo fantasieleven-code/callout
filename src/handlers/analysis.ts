@@ -7,7 +7,9 @@ import { isGitRepo, getCommitStats, getCommitMessages } from '../git.js';
 import { buildHistoryContext, saveReview, loadHistory } from '../history.js';
 import { getTargetUser } from '../config.js';
 import { resolvePath, withPathHeader } from '../util.js';
-import type { Perspective } from '../types.js';
+import type { Perspective, PerspectiveGroup } from '../types.js';
+import { PERSPECTIVE_GROUPS } from '../types.js';
+import { buildIdeaScorePrompt } from '../prompts/idea-score.js';
 import { collectCoachSignals, buildCoachPrompt } from '../coach.js';
 import { detectStage } from '../guide.js';
 import { formatTodoSummary } from '../todo.js';
@@ -15,12 +17,16 @@ import { formatTodoSummary } from '../todo.js';
 export function registerAnalysisTools(server: McpServer): void {
   server.tool(
     'review',
-    'Multi-perspective architecture review. Analyzes full project context and produces actionable findings from expert viewpoints. Use focus parameter to zoom in on a specific feature, page, or decision while keeping full project context.',
+    'Multi-perspective architecture review. Analyzes full project context and produces actionable findings from expert viewpoints. Use focus parameter to zoom in on a specific feature, page, or decision. Use perspective_group to select a predefined group (technical/business/founder) instead of listing individual perspectives.',
     {
       perspectives: z
-        .array(z.enum(['cto', 'security', 'product', 'devops', 'customer', 'strategy']))
+        .array(z.enum(['cto', 'security', 'product', 'devops', 'customer', 'strategy', 'investor', 'unicorn_founder', 'solo_entrepreneur']))
         .optional()
-        .describe('Which perspectives to include. Defaults to all six.'),
+        .describe('Which perspectives to include. Defaults to all nine. Overrides perspective_group if both are provided.'),
+      perspective_group: z
+        .enum(['technical', 'business', 'founder'])
+        .optional()
+        .describe('Select a predefined group: technical (cto+security+devops), business (product+customer+strategy), founder (investor+unicorn_founder+solo_entrepreneur). Ignored if perspectives is specified.'),
       focus: z
         .string()
         .optional()
@@ -34,12 +40,19 @@ export function registerAnalysisTools(server: McpServer): void {
         .optional()
         .describe('Path to the project to review. Defaults to current working directory.'),
     },
-    async ({ perspectives, focus, customer_role, project_path }) => {
+    async ({ perspectives, perspective_group, focus, customer_role, project_path }) => {
       const cwd = resolvePath(project_path);
 
       try {
         const context = await collectContext(cwd);
-        const selectedPerspectives = (perspectives as Perspective[] | undefined) || ['cto', 'security', 'product', 'devops', 'customer', 'strategy'];
+        let selectedPerspectives: Perspective[];
+        if (perspectives && perspectives.length > 0) {
+          selectedPerspectives = perspectives as Perspective[];
+        } else if (perspective_group) {
+          selectedPerspectives = PERSPECTIVE_GROUPS[perspective_group as PerspectiveGroup];
+        } else {
+          selectedPerspectives = ['cto', 'security', 'product', 'devops', 'customer', 'strategy', 'investor', 'unicorn_founder', 'solo_entrepreneur'];
+        }
 
         let resolvedCustomerRole = customer_role;
         if (!resolvedCustomerRole && selectedPerspectives.includes('customer')) {
@@ -164,6 +177,37 @@ export function registerAnalysisTools(server: McpServer): void {
           stage,
         );
 
+        return {
+          content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return {
+          content: [{ type: 'text' as const, text: `Error: ${message}` }],
+          isError: true,
+        };
+      }
+    },
+  );
+
+  server.tool(
+    'idea_score',
+    'Score your idea across 10 dimensions with a skeptical default stance. Produces quantitative scores (1-10) for market size, feasibility, moat, revenue, time-to-market, user validation, resource efficiency, scalability, founder fit, and risk/reward. Returns a verdict: CONTINUE, SIMPLIFY, PAUSE, or DELETE.',
+    {
+      idea_description: z
+        .string()
+        .optional()
+        .describe('Describe the idea to score. If not provided, Callout infers from README and project context.'),
+      project_path: z
+        .string()
+        .optional()
+        .describe('Path to the project. Defaults to current working directory.'),
+    },
+    async ({ idea_description, project_path }) => {
+      const cwd = resolvePath(project_path);
+      try {
+        const context = await collectContext(cwd);
+        const prompt = buildIdeaScorePrompt(context, idea_description);
         return {
           content: [{ type: 'text' as const, text: withPathHeader(prompt, cwd) }],
         };

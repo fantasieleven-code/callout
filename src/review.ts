@@ -6,6 +6,9 @@ import { productBuildPrompt } from './prompts/product.js';
 import { devopsBuildPrompt } from './prompts/devops.js';
 import { customerBuildPrompt } from './prompts/customer.js';
 import { strategyBuildPrompt } from './prompts/strategy.js';
+import { investorBuildPrompt } from './prompts/investor.js';
+import { unicornFounderBuildPrompt } from './prompts/unicorn-founder.js';
+import { soloEntrepreneurBuildPrompt } from './prompts/solo-entrepreneur.js';
 
 const PROMPT_BUILDERS: Record<Perspective, (ctx: ProjectContext, customerRole?: string) => string> = {
   cto: ctoBuildPrompt,
@@ -14,6 +17,9 @@ const PROMPT_BUILDERS: Record<Perspective, (ctx: ProjectContext, customerRole?: 
   devops: devopsBuildPrompt,
   customer: customerBuildPrompt,
   strategy: strategyBuildPrompt,
+  investor: investorBuildPrompt,
+  unicorn_founder: unicornFounderBuildPrompt,
+  solo_entrepreneur: soloEntrepreneurBuildPrompt,
 };
 
 const PERSPECTIVE_LABELS: Record<Perspective, string> = {
@@ -23,6 +29,9 @@ const PERSPECTIVE_LABELS: Record<Perspective, string> = {
   devops: 'DevOps / Infrastructure Expert',
   customer: 'Target Customer',
   strategy: 'Strategy / Business Leadership',
+  investor: 'Investor / VC Partner',
+  unicorn_founder: 'Unicorn Founder',
+  solo_entrepreneur: 'Solo Entrepreneur',
 };
 
 export function buildReviewPrompt(

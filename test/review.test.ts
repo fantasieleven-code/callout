@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { buildReviewPrompt } from '../src/review.js';
 import type { ProjectContext } from '../src/types.js';
+import { PERSPECTIVE_GROUPS } from '../src/types.js';
 
 const mockContext: ProjectContext = {
   cwd: '/test/project',
@@ -18,7 +19,7 @@ const mockContext: ProjectContext = {
 };
 
 describe('buildReviewPrompt', () => {
-  it('includes all 6 perspectives by default', () => {
+  it('includes all 9 perspectives by default', () => {
     const result = buildReviewPrompt(mockContext);
     expect(result).toContain('CTO / Technical Leadership Review');
     expect(result).toContain('Security Expert Review');
@@ -26,6 +27,9 @@ describe('buildReviewPrompt', () => {
     expect(result).toContain('DevOps / Infrastructure Expert Review');
     expect(result).toContain('Target Customer Review');
     expect(result).toContain('Strategy / Business Leadership Review');
+    expect(result).toContain('Investor / VC Partner Review');
+    expect(result).toContain('Unicorn Founder Review');
+    expect(result).toContain('Solo Entrepreneur Review');
   });
 
   it('filters to selected perspectives', () => {
@@ -91,5 +95,11 @@ describe('buildReviewPrompt', () => {
     const result = buildReviewPrompt(mockContext);
     expect(result).toContain('Architecture Review: test-app');
     expect(result).not.toContain('Focused Review');
+  });
+
+  it('perspective groups contain correct perspectives', () => {
+    expect(PERSPECTIVE_GROUPS.technical).toEqual(['cto', 'security', 'devops']);
+    expect(PERSPECTIVE_GROUPS.business).toEqual(['product', 'customer', 'strategy']);
+    expect(PERSPECTIVE_GROUPS.founder).toEqual(['investor', 'unicorn_founder', 'solo_entrepreneur']);
   });
 });

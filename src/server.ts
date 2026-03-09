@@ -22,7 +22,7 @@ Every Callout tool call MUST include \`project_path\` set to the absolute path o
 When you propose a solution or answer "should I / what to use / how to do" questions, naturally cover three angles: (1) Technical — feasible? simpler way? (2) Product value — worth doing? (3) User perception — how will the target user react? Do NOT call any tool for this.
 
 ### Auto-Plan (discuss before coding)
-When the user describes a new feature: do NOT start coding. First call \`review\` with \`focus\` set to the feature description. Discuss with user. Only code after explicit approval.
+When the user describes a new feature: do NOT start coding. First call \`review\` with \`focus\` set to the feature description. For quick validation, call \`idea_score\` to get a quantitative assessment. Discuss with user. Only code after explicit approval.
 
 ### First Conversation
 When starting a new conversation: call \`callout_help\` to show available tools.

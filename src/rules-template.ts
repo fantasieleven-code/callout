@@ -52,8 +52,9 @@ The \`review\` tool has a \`focus\` parameter — use it to zoom into a specific
 - **When the user seems stuck or frustrated**: Call \`coach\` — the issue might be collaboration habits, not code
 
 ### Auto-Plan (discuss before coding)
-- **When the user describes a new feature or requirement**: Do NOT start writing code immediately. First call \`review\` with \`focus\` set to the feature description (what do experts think?). Discuss architecture, scope, and trade-offs with the user. Only start implementation after the user explicitly says "go ahead", "start coding", "implement it", or similar confirmation.
+- **When the user describes a new feature or requirement**: Do NOT start writing code immediately. First call \`review\` with \`focus\` set to the feature description (what do experts think?). For quick go/no-go decisions, call \`idea_score\` to get a quantitative 10-dimension assessment. Discuss architecture, scope, and trade-offs with the user. Only start implementation after the user explicitly says "go ahead", "start coding", "implement it", or similar confirmation.
 - **When the user asks to add a major dependency or service** (database, auth, payments, etc.): Call \`review(focus="should we use [service]?", perspectives=["cto", "strategy"])\` to discuss alternatives before installing or integrating anything.
+- **When evaluating whether an idea is worth pursuing**: Call \`idea_score\` for a quantitative assessment. If the verdict is PAUSE or DELETE, stop and discuss with the user before writing any code.
 
 ### Rules
 - **Plan before code**: When Auto-Plan triggers, stay in discussion mode. Present findings, ask questions, and wait for the user to decide. Do not write files, install packages, or generate code until the user explicitly approves the approach.

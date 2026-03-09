@@ -23,14 +23,13 @@ export function registerMetaTools(server: McpServer): void {
 ## Core Tools
 
 ### review — "Get expert opinions on my project"
-6 perspectives: CTO, Security, Product, DevOps, Customer, Strategy. Finds what you didn't know to look for. Use \`focus\` to zoom into a specific feature, decision, or question.
+9 perspectives in 3 groups: Technical (CTO, Security, DevOps), Business (Product, Customer, Strategy), Founder (Investor, Unicorn Founder, Solo Entrepreneur). Use \`focus\` to zoom in, \`perspective_group\` to select a group.
 
 **Try:**
-- "Review this project" — full 6-perspective review
+- "Review this project" — full 9-perspective review
+- "Review with founder group" — investor + unicorn founder + solo entrepreneur
 - "Review focus: should I use Supabase or Firebase?" — technology decision
 - "Review focus: user login page" — focused feature review
-- "Review focus: what can I delete?" — cleanup review
-- "Review focus: is this feature worth building?" — challenge current work
 - "Review security + CTO only" — selected perspectives
 
 ### coach — "Am I working with AI the right way?"
@@ -42,6 +41,11 @@ Analyzes your project setup, development habits, and knowledge blind spots. Reve
 Translates test results into plain language. Shows what's tested, what failed, and produces a manual test script.
 
 **Try:** "Translate my test results" / "What do these tests mean?"
+
+### idea_score — "Is this idea worth building?"
+Scores your idea across 10 dimensions (market size, feasibility, moat, revenue, etc.) with a skeptical default stance. Returns a verdict: CONTINUE, SIMPLIFY, PAUSE, or DELETE.
+
+**Try:** "Score this idea" / "Is this worth building?" / "Rate my project"
 
 ## Supporting Tools
 

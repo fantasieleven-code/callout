@@ -31,6 +31,18 @@ export interface ProjectContext {
   };
 }
 
-export type Perspective = 'cto' | 'security' | 'product' | 'devops' | 'customer' | 'strategy';
+export type Perspective = 'cto' | 'security' | 'product' | 'devops' | 'customer' | 'strategy'
+  | 'investor' | 'unicorn_founder' | 'solo_entrepreneur';
 
-export const ALL_PERSPECTIVES: Perspective[] = ['cto', 'security', 'product', 'devops', 'customer', 'strategy'];
+export const ALL_PERSPECTIVES: Perspective[] = [
+  'cto', 'security', 'product', 'devops', 'customer', 'strategy',
+  'investor', 'unicorn_founder', 'solo_entrepreneur',
+];
+
+export type PerspectiveGroup = 'technical' | 'business' | 'founder';
+
+export const PERSPECTIVE_GROUPS: Record<PerspectiveGroup, Perspective[]> = {
+  technical: ['cto', 'security', 'devops'],
+  business: ['product', 'customer', 'strategy'],
+  founder: ['investor', 'unicorn_founder', 'solo_entrepreneur'],
+};

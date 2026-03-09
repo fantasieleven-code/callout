@@ -2,16 +2,27 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
+import { execSync } from 'node:child_process';
 import { RULES_TEMPLATE, RULES_VERSION } from './rules-template.js';
 
 interface McpConfig {
   mcpServers?: Record<string, { command: string; args?: string[] }>;
 }
 
-const CALLOUT_MCP_ENTRY = {
-  command: 'npx',
-  args: ['callout-dev'],
-};
+function detectCalloutCommand(): { command: string; args?: string[] } {
+  // Prefer globally installed binary (avoids npx download delays behind proxies)
+  try {
+    const globalBin = execSync('which callout 2>/dev/null || where callout 2>nul', { encoding: 'utf-8' }).trim();
+    if (globalBin) {
+      return { command: globalBin };
+    }
+  } catch {
+    // not installed globally
+  }
+  return { command: 'npx', args: ['callout-dev'] };
+}
+
+const CALLOUT_MCP_ENTRY = detectCalloutCommand();
 
 const MCP_TARGETS = [
   {
@@ -174,7 +185,7 @@ export function setup(cwd?: string): void {
   console.log('');
   console.log('  Done! Restart your editor, then try:');
   console.log('  → "Review this project"');
-  console.log('  → "Challenge what I\'m working on"');
+  console.log('  → "Coach me"');
   console.log('');
 }
 

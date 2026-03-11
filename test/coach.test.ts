@@ -126,4 +126,18 @@ describe('buildCoachPrompt', () => {
     expect(prompt).toContain('[SHOULD]');
     expect(prompt).toContain('todo_add');
   });
+
+  it('detects unbound SDK dependencies', () => {
+    const signals = collectCoachSignals(TEST_DIR, mockContext);
+    // prisma is in SDK_INDICATORS and not bound to any doc
+    expect(signals.unboundSdks).toContain('prisma');
+  });
+
+  it('recommends Context7 and Firecrawl for unbound SDKs', () => {
+    const signals = collectCoachSignals(TEST_DIR, mockContext);
+    const prompt = buildCoachPrompt(mockContext, signals, '', '', '', 0, null, 'building');
+    expect(prompt).toContain('Context7');
+    expect(prompt).toContain('Firecrawl');
+    expect(prompt).toContain('UNPROTECTED SDKs');
+  });
 });

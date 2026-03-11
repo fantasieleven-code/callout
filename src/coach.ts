@@ -2,6 +2,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import type { ProjectContext } from './types.js';
 import type { ProjectStage } from './guide.js';
+import { loadDocs } from './docs.js';
 
 export interface CoachSignals {
   hasClaudeMd: boolean;
@@ -13,6 +14,7 @@ export interface CoachSignals {
   hasBuildScript: boolean;
   vagueFileNames: string[];
   testRatio: number; // testFiles / totalFiles
+  unboundSdks: string[]; // SDK deps without doc bindings
 }
 
 const VAGUE_NAMES = ['utils', 'helpers', 'misc', 'common', 'stuff', 'temp', 'test'];
@@ -55,6 +57,39 @@ export function collectCoachSignals(cwd: string, context: ProjectContext): Coach
     ? context.stats.testFiles / context.stats.totalFiles
     : 0;
 
+  // Detect SDK dependencies without doc bindings
+  const SDK_INDICATORS = new Set([
+    // Payment
+    'stripe', '@stripe/stripe-js', 'alipay-sdk', 'wechatpay-node-v3',
+    // Cloud/AI
+    '@volcengine/rtc', '@volcengine/openapi', 'openai', '@anthropic-ai/sdk',
+    'aws-sdk', '@aws-sdk/client-s3', '@google-cloud/storage', 'firebase', 'firebase-admin',
+    // Auth
+    '@auth0/auth0-spa-js', 'passport', 'next-auth',
+    // Database
+    'prisma', '@prisma/client', 'drizzle-orm', 'mongoose', 'typeorm',
+    // Communication
+    'twilio', '@sendgrid/mail', 'nodemailer',
+    // Platform SDKs
+    'wechat-jssdk', 'dingtalk-jsapi', 'lark-js-sdk',
+  ]);
+
+  const allDeps = {
+    ...(context.packageJson?.dependencies || {}),
+    ...(context.packageJson?.devDependencies || {}),
+  };
+  const sdkDeps = Object.keys(allDeps).filter(d => SDK_INDICATORS.has(d));
+
+  const docsConfig = loadDocs(cwd);
+  // Simple heuristic: check if any binding domain contains the dep name
+  const unboundSdks = sdkDeps.filter(dep => {
+    const depBase = dep.replace(/^@[^/]+\//, '').toLowerCase();
+    return !docsConfig.bindings.some(b =>
+      b.domain.toLowerCase().includes(depBase) ||
+      b.docs.some(d => d.toLowerCase().includes(depBase)),
+    );
+  });
+
   return {
     hasClaudeMd,
     hasCursorRules,
@@ -65,6 +100,7 @@ export function collectCoachSignals(cwd: string, context: ProjectContext): Coach
     hasBuildScript,
     vagueFileNames,
     testRatio,
+    unboundSdks,
   };
 }
 
@@ -174,6 +210,35 @@ export function buildCoachPrompt(
     'What the user probably does not know they do not know.',
     '',
   );
+
+  // Unbound SDK warning
+  if (signals.unboundSdks.length > 0) {
+    sections.push(
+      '### UNPROTECTED SDKs — Domain Knowledge Risk',
+      '',
+      `The following SDK dependencies have **no doc binding** registered. AI may be guessing field names and configs:`,
+      '',
+      ...signals.unboundSdks.map(sdk => `- **${sdk}** — not bound to any documentation`),
+      '',
+      'Recommended actions:',
+      '',
+      '**Option A (fastest)**: If [Context7 MCP](https://github.com/upstash/context7) is installed, it can pull latest docs for 9000+ public libraries automatically:',
+      '```',
+      'resolve-library-id(libraryName: "<sdk-name>") → get-library-docs(context7CompatibleLibraryID: "...", topic: "...")',
+      '```',
+      'Save the output as a local markdown file, then bind it with Callout.',
+      '',
+      '**Option B (custom docs)**: If the SDK has private/internal documentation, or Context7 does not cover it:',
+      '- If [Firecrawl MCP](https://github.com/mendableai/firecrawl-mcp-server) is installed, scrape the official docs: `firecrawl_scrape(url: "<docs-url>")`',
+      '- Save the output to `docs/<sdk-name>-api.md`',
+      '',
+      '**Then bind with Callout**:',
+      '```',
+      `doc(action: "register", domain: "<sdk-name>", docs: ["docs/<sdk>-api.md"], scope: ["src/<relevant-path>/**"], rule: "Must read <SDK> docs before modifying this code")`,
+      '```',
+      '',
+    );
+  }
 
   // Dependencies analysis
   const deps = context.packageJson?.dependencies || {};

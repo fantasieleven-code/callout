@@ -96,6 +96,12 @@ export function buildReviewPrompt(
     '```',
     '',
     'Then proceed with the detailed perspective reviews below.',
+    ...(selected.length > 5
+      ? [
+          '',
+          '> **Tip**: This review has ' + selected.length + ' perspectives. If Sequential Thinking MCP (`sequentialthinking`) is available, use it to process each perspective as a separate thought step. This prevents quality degradation in later perspectives.',
+        ]
+      : []),
   ].join('\n');
 
   const footer = [

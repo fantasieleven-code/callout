@@ -65,7 +65,26 @@ Scans all your projects, shows health status, and gives resource allocation advi
 
 **Try:** "Show my portfolio"
 
+### Domain Knowledge Guard — "Make AI read docs before coding"
+Binds documentation to code paths so AI must read docs before modifying protected files.
+Tools: doc (register/remove/list/check), doc_gate, renovation
+
+**Try:**
+- "Register Stripe docs for payment code" — bind docs to code paths
+- "Check if my RTC code matches the docs" — compliance verification
+- "Start a renovation for volcano-rtc" — systematic domain knowledge audit
+
 ### Other: set_target_user, save_review_findings, recommend_dismiss, recommend_reset, init
+
+---
+
+## Works Best With (optional companion MCPs)
+
+| MCP | What it adds to Callout | Install |
+|-----|------------------------|---------|
+| **Context7** | Auto-pulls latest docs for 9000+ public libraries — feed into \`doc register\` | \`claude mcp add context7 -- npx -y @upstash/context7-mcp\` |
+| **Sequential Thinking** | Structured step-by-step reasoning for complex renovations and multi-perspective reviews | \`claude mcp add sequential-thinking -- npx -y @anthropic-ai/mcp-server-sequential-thinking\` |
+| **Firecrawl** | Scrapes any web docs into markdown — bind with \`doc register\` | \`claude mcp add firecrawl -- npx -y firecrawl-mcp\` |
 
 ---
 

@@ -29,11 +29,15 @@ const EXPECTED_TOOLS = [
   'save_review_findings',
   'set_target_user',
   'portfolio',
+  // Docs tools (3)
+  'doc',
+  'doc_gate',
+  'renovation',
 ];
 
 describe('MCP Server integration', () => {
-  it('should have exactly 16 tools registered', () => {
-    expect(Object.keys(registeredTools).length).toBe(16);
+  it('should have exactly 19 tools registered', () => {
+    expect(Object.keys(registeredTools).length).toBe(19);
   });
 
   it.each(EXPECTED_TOOLS)('should have tool: %s', (toolName) => {
@@ -56,6 +60,8 @@ describe('MCP Server integration', () => {
     expect(instructions).toContain('Auto-Plan');
     expect(instructions).toContain('callout_help');
     expect(instructions).toContain('portfolio');
+    expect(instructions).toContain('Auto-Doc-Gate');
+    expect(instructions).toContain('MCP Ecosystem Integration');
   });
 
   it('should not start transport when imported (isMainModule guard)', () => {

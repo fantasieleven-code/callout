@@ -1,6 +1,6 @@
 {
   "name": "callout-dev",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Multi-perspective architecture review via MCP. One command, nine expert viewpoints.",
   "type": "module",
   "main": "dist/server.js",
@@ -39,6 +39,7 @@
     "url": "https://github.com/fantasieleven-code/callout/issues"
   },
   "homepage": "https://callout.dev",
+  "mcpName": "io.github.fantasieleven-code/callout",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",

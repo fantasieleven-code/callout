@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.fantasieleven-code/callout",
+  "description": "Multi-perspective architecture review. 9 expert viewpoints, zero API cost.",
+  "repository": {
+    "url": "https://github.com/fantasieleven-code/callout",
+    "source": "github"
+  },
+  "version": "0.5.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "callout-dev",
+      "version": "0.5.2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

@@ -75,6 +75,10 @@ After any manual setup, **restart your editor** so it picks up the new MCP serve
 
 ---
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/fantasieleven-code-callout).
+
 ## Core Features
 
 ### `review` — 9 expert perspectives on your project
